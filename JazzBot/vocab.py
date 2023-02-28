@@ -26,9 +26,10 @@ DICT = [(element, index) for index, element in enumerate(VOCAB)]
 
 custom_vocab = vocab(OrderedDict(DICT))
 
-def itos(int):
-    return custom_vocab.get_itos()[i]
+def itos(voc, i):
+    return voc.get_itos()[i]
 
-def stoi(str):
-    return
+def stoi(voc, s):
+    return voc[s]
+
 itos_vocab = custom_vocab.get_itos()
