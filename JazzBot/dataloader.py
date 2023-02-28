@@ -18,10 +18,10 @@ def noteToToken(n,l):
     last_time = n.offset*4
     note_velocity = n.volume.velocity
 
-    return les_tokens.append([NOTE_TOKS[note_pitch],
-                            DUR_TOKS[note_duration],
-                            TIM_TOKS[note_offset],
-                            VEL_TOKS[note_velocity]])
+    return [NOTE_TOKS[note_pitch],
+            DUR_TOKS[note_duration],
+            TIM_TOKS[note_offset],
+            VEL_TOKS[note_velocity]]
 
 def midiToTokens(folder_path,f):
     '''
