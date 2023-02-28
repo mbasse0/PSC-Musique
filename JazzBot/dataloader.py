@@ -55,7 +55,7 @@ def tokensToPieces(t,N):
     for i in range(len(t)//(N+1)-1):
         pieces.append(t[i:i+N])
         if i == len(t)//(N+1)-2:
-            n = t[i:].length()
+            n = len(t[i:])
             list_pad = [PAD]*4
             pieces.append(t[i:]+(N-n)*[list_pad])
     return pieces
@@ -77,7 +77,7 @@ def midisToVectInputTarget(folder_path,N):
     file_names = os.listdir(folder_path)
     for f in file_names:
         tokens = midiToTokens(folder_path,f)
-        pieces = tokensToPieces(t,N)
+        pieces = tokensToPieces(tokens,N)
         for p in pieces:
             input,target = pieceToInputTarget(p)
             vectInput.append(input)
