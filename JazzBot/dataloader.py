@@ -3,14 +3,67 @@ from vocab import *
 from music21 import *
 import os
 
-folder_path = "../Data" 
 
+
+def noteToToken(n,l):
+    '''
+    parameters : note, last_time
+    NB : A terme il faudra arrondir plutot que de prendre la partie entiere
+    '''
+    note_pitch = n.pitch.midi
+    last_time = l
+    note_duration = int(n.duration.quarterLength*4)
+    note_offset = int(n.offset*4 - last_time)
+    last_time = n.offset*4
+    note_velocity = n.volume.velocity
+
+    return les_tokens.append([NOTE_TOKS[note_pitch],
+                            DUR_TOKS[note_duration],
+                            TIM_TOKS[note_offset],
+                            VEL_TOKS[note_velocity]])
+
+def midiToTokens(midi_file):
+    '''
+    read a midi file and extract the notes, no token start or end
+    '''
+    tokens = []
+    # Create a stream from the MIDI file
+    stream = midi.translate.midiFileToStream(midi_file)
+    # Iterate over the notes in the stream and extract the note information
+    last_time = 0
+    for note in stream.flat.notes:
+        if note.isNote:
+            tokens.append(noteToToken(note,last_time))
+
+        if note.isChord:
+            for n in note:
+                tokens.append(noteToToken(n,last_time))
+
+    return tokens
+
+def tokensToPieces(t,N):
+    '''
+    cut the list of tokens into pieces of length
+    '''
+    pieces = []
+    for i in range(len(t)//(N+1)-1):
+        pieces.append(t[i:i+taille_bloc])
+    return pieces
+
+def pieceToInputTarget(p):
+    '''
+    return a couple of vectors (input, target) with input = SOS + piece; target = piece + EOS
+    '''
+    target = vectorize()
+
+
+
+folder_path = "../Data" 
+    
 # Load the MIDI file
 midi_file = midi.MidiFile()
 
 les_tokens = []
-
- 
 
 # Get all the file names in the folder
 file_names = os.listdir(folder_path)
@@ -28,37 +81,11 @@ for f in file_names:
 
     for note in stream.flat.notes:
         if note.isNote:
-            note_pitch = note.pitch.midi
-            # A terme il faudra arrondir plutot que de prendre la partie entiere
-            note_duration = int(note.duration.quarterLength*4)
-            note_offset = int(note.offset*4 - last_time)
-            last_time = note.offset*4
-            note_velocity = note.volume.velocity
-            les_tokens.append(NOTE_TOKS[note_pitch])
-            les_tokens.append(DUR_TOKS[note_duration])
-            les_tokens.append(TIM_TOKS[note_offset])
-            les_tokens.append(VEL_TOKS[note_velocity])
-            # print("Note Pitch:", note_pitch)
-            # print("Note Duration:", note_duration)
-            # print("Note TimeShift:", note_offset)
-            # print("Note Velocity:", note_velocity)
+            les_tokens.append(noteToToken(note))
 
         if note.isChord:
-
-            for note2 in note:
-                note_pitch = note2.pitch.midi
-                note_duration = int(note.duration.quarterLength*4)
-                note_offset = int(note.offset*4 - last_time)
-                last_time = note.offset*4
-                note_velocity = note2.volume.velocity
-                les_tokens.append(NOTE_TOKS[note_pitch])
-                les_tokens.append(DUR_TOKS[note_duration])
-                les_tokens.append(TIM_TOKS[note_offset])
-                les_tokens.append(VEL_TOKS[note_velocity])
-                # print("Note Pitch:", note_pitch)
-                # print("Note Duration:", note_duration)
-                # print("Note Time:", note_offset)
-                # print("Note Velocity:", note_velocity)
+            for n in note:
+                les_tokens.append(noteToToken(n))
 
 
 #répartir le data du morceau en blocs de 120 attributs (30 notes)
@@ -82,4 +109,4 @@ def unvectorize(v):
 
 input_vect = [ [vectorize(custom_vocab[tok]) for tok in morceau] for morceau in les_morceaux ]
 rep_vect = [ [vectorize(custom_vocab[tok]) for tok in morceau] for morceau in les_morceaux_shift ]
-          
+        
