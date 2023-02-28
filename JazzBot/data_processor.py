@@ -1,4 +1,3 @@
-import numpy as np
 from vocab import *
 from music21 import *
 import os

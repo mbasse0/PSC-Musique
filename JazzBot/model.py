@@ -1,16 +1,5 @@
-import numpy as np
 import torch
 from torch.utils.data import Dataset, DataLoader
-from vocab import custom_vocab
-
-# Define hyperparameters
-batch_size = 32
-num_epochs = 5
-num_tokens = len(custom_vocab)
-embed_dim = len(custom_vocab) #la taille du voc car on fait du one hot
-num_heads = 283
-hidden_dim = 64
-dropout = 0.1
 
 class MyDataset(Dataset):
     def __init__(self, input_data, output_data):
