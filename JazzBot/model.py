@@ -51,7 +51,10 @@ class Transformer(nn.Module):
     def __init__(
         self,
         num_tokens,
-        dim_model,
+        dim_model_NOTE,
+        dim_model_DUR,
+        dim_model_TIM,
+        dim_model_VEL,
         num_heads,
         num_encoder_layers,
         num_decoder_layers,
@@ -65,9 +68,23 @@ class Transformer(nn.Module):
 
         # LAYERS
         self.positional_encoder = PositionalEncoding(
-            dim_model=dim_model, dropout_p=dropout_p, max_len=5000
+            dim_model_NOTE=dim_model_NOTE, dropout_p=dropout_p, max_len=5000
         )
-        self.embedding = nn.Embedding(num_tokens, dim_model)
+        self.embedding_NOTE = nn.Embedding(num_tokens, dim_model_NOTE)
+        self.positional_encoder = PositionalEncoding(
+            dim_model_DUR=dim_model_DUR, dropout_p=dropout_p, max_len=5000
+        )
+        self.embedding_DUR = nn.Embedding(num_tokens, dim_model_DUR)
+        self.positional_encoder = PositionalEncoding(
+            dim_model_TIM=dim_model_TIM, dropout_p=dropout_p, max_len=5000
+        )
+        self.embedding_TIM = nn.Embedding(num_tokens, dim_model_TIM)
+        self.positional_encoder = PositionalEncoding(
+            dim_model_VEL=dim_model_VEL, dropout_p=dropout_p, max_len=5000
+        )
+        self.embedding_VEL = nn.Embedding(num_tokens, dim_model_VEL)
+
+
         self.transformer = nn.Transformer(
             d_model=dim_model,
             nhead=num_heads,
@@ -76,11 +93,13 @@ class Transformer(nn.Module):
             dropout=dropout_p,
             batch_first = True
         )
-        self.out = nn.Linear(dim_model, num_tokens)
-        '''
-        Créer les 3 autres out
-        '''
-    # A modifier pour utiliser 4 out functions différentes selon les cas    
+        self.out_NOTE = nn.Linear(dim_model_NOTE, num_tokens)
+        self.out_DUR = nn.Linear(dim_model_DUR, num_tokens)
+        self.out_TIM = nn.Linear(dim_model_TIM, num_tokens)
+        self.out_VAL = nn.Linear(dim_model_VEL, num_tokens)
+
+
+       
     def forward(self, src, tgt, tgt_mask=None, src_pad_mask=None, tgt_pad_mask=None):
         # Src size must be (batch_size, src sequence length)
         # Tgt size must be (batch_size, tgt sequence length)
@@ -113,8 +132,3 @@ class Transformer(nn.Module):
         
         return mask
     
-    # Le pad mask sera utile quand on aura ajouté les PAD tokens
-    # def create_pad_mask(self, matrix: torch.tensor, pad_token: int) -> torch.tensor:
-    #     # If matrix = [1,2,3,0,0,0] where pad_token=0, the result mask is
-    #     # [False, False, False, True, True, True]
-    #     return (matrix == pad_token)
