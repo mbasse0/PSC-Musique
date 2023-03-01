@@ -36,46 +36,47 @@ def midiToTokens(folder_path,f):
     last_time = 0
     for note in stream.flat.notes:
         if note.isNote:
-            tokens.append(noteToToken(note,last_time))
+            tokens+=noteToToken(note,last_time)
 
         if note.isChord:
             for n in note:
-                tokens.append(noteToToken(n,last_time))
-    tokens.append([EOS]*4)
+                tokens+=noteToToken(n,last_time)
 
     return tokens
 
 def tokensToPieces(t,N):
     '''
+    parameters : t= tokens (4*(nb_tok))  
     cut the list of tokens into pieces of length N, add PAD if necessary
     '''
     pieces = []
-    for i in range(len(t)//(N+1)-1):
-        pieces.append(t[i:i+N])
-        if i == len(t)//(N+1)-2:
-            n = len(t[i:])
-            list_pad = [PAD]*4
-            pieces.append(t[i:]+(N-n)*[list_pad])
+    nb_tok = (len(t))//4
+    for i in range(nb_tok-N+1):
+        pieces.append(t[4*i:4*i+N])
     return pieces
 
 def pieceToInputTarget(p):
     '''
     return a couple of vectors (input, target) with input = SOS + piece; target = piece + EOS
     '''
-    input_p = [[SOS]*4]+[custom_vocab(tok) for tok in p]
-    target_p = [custom_vocab(tok) for tok in p]+[[EOS]*4]
+    input_p = cv_sos()
+    target_p = []
+    for i in range(len(p)//4):
+        input_p+= custom_vocab(p[4*i:4*(i+1)])
+        target_p += custom_vocab(p[4*i:4*(i+1)])
+    target_p += cv_eos()
     return(input_p,target_p)
 
 def folderToVectInputTarget(folder_path,N):
     '''
-    parameters : folder_path, N = size of pieces
+    parameters : folder_path, N = number of notes in pieces 
     '''
     vectInput = []
     vectTarget = []
     file_names = os.listdir(folder_path)
     for f in file_names:
         tokens = midiToTokens(folder_path,f)
-        pieces = tokensToPieces(tokens,N)
+        pieces = tokensToPieces(tokens,4*N)
         for p in pieces:
             input,target = pieceToInputTarget(p)
             vectInput.append(input)
