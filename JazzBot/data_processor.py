@@ -66,7 +66,7 @@ def pieceToInputTarget(p):
     target_p = [custom_vocab(tok) for tok in p]+[[EOS]*4]
     return(input_p,target_p)
 
-def midisToVectInputTarget(folder_path,N):
+def folderToVectInputTarget(folder_path,N):
     '''
     parameters : folder_path, N = size of pieces
     '''
