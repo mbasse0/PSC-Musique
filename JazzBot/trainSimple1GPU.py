@@ -66,5 +66,4 @@ def fit(model, opt, loss_fn, train_dataloader, epochs):
     return train_loss_list#, validation_loss_list
 
 train_loss_list = fit(model, opt, loss_fn, dataloader, 2)
-
 print(train_loss_list)
