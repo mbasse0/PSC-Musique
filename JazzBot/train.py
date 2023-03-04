@@ -1,15 +1,6 @@
 from model import *
 from data_loader import *
-
-
-device = "cuda" if torch.cuda.is_available() else "cpu"
-model = Transformer(
-    num_tokens=len(CV), dim_model=256, num_heads=2, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1
-).to(device)
-opt = torch.optim.SGD(model.parameters(), lr=0.01)
-loss_fn = nn.CrossEntropyLoss()
-dataloader = dataloader("../Data/",batch_size = 32,N=31)
-
+from config import *
 
 def train_loop(model, opt, loss_fn, dataloader):
     model.train()
@@ -25,6 +16,8 @@ def train_loop(model, opt, loss_fn, dataloader):
         X = torch.tensor([0]*len(y_input))
         X, y_input, y_expected = X.clone().detach() , y_input.clone().detach() , y_expected.clone().detach() 
 
+        #transition sur GPU
+        X, y_input, y_expected = X.to(device),y_input.to(device), y_expected.to(device)
         
         # Get mask to mask out the next words
         sequence_length = y_input.size(1)
@@ -64,6 +57,3 @@ def fit(model, opt, loss_fn, train_dataloader, epochs):
         print()
         
     return train_loss_list#, validation_loss_list
-
-train_loss_list = fit(model, opt, loss_fn, dataloader, 2)
-print(train_loss_list)

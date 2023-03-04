@@ -1,8 +1,8 @@
 import torch.nn as nn
-import torch
 import math
 from torch.utils.data import Dataset, DataLoader
 from positional_encoding import *
+from config import *
 
 class MyDataset(Dataset):
     def __init__(self, input_data, output_data):
@@ -61,6 +61,7 @@ class Transformer(nn.Module):
         # Tgt size must be (batch_size, tgt sequence length)
 
         # Embedding + positional encoding - Out size = (batch_size, sequence length, dim_model)
+        
         src = self.embedding(src) * math.sqrt(self.dim_model)
         tgt = self.embedding(tgt) * math.sqrt(self.dim_model)
         src = self.positional_encoder(src)
