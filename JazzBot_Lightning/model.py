@@ -17,7 +17,7 @@ class MyDataset(Dataset):
         return input_tensor, output_tensor
 
 
-class Transformer(nn.Module):
+class Transformer(pl.LightningModule):
     """
     Model from "A detailed guide to Pytorch's nn.Transformer() module.", by
     Daniel Melchor: https://medium.com/p/c80afbc9ffb1/
