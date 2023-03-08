@@ -1,7 +1,9 @@
 from vocab import *
 from music21 import *
 import os
-
+import pytorch_lightning as pl
+#mettre classe
+def prepare_data(self) : 
 
 
 def noteToToken(n,l):
