@@ -57,3 +57,15 @@ def fit(model, opt, loss_fn, train_dataloader, epochs):
         print()
         
     return train_loss_list#, validation_loss_list
+
+
+model = Transformer(
+   num_tokens=len(CV), dim_model=256, num_heads=2, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1
+).to(device)
+opt = torch.optim.SGD(model.parameters(), lr=0.01)
+loss_fn = nn.CrossEntropyLoss()
+
+dataloader = dataloader("../Data/", batch_size=32, N=25)
+
+train_loss_list = fit(model, opt, loss_fn, dataloader, 10)
+torch.save(model, "../model.pth")
