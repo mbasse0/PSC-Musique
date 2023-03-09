@@ -13,9 +13,7 @@ def noteToToken(n,l):
     last_time = l
     note_duration = int(n.duration.quarterLength*4)
     note_offset = int(n.offset*4 - last_time)
-    last_time = n.offset*4
     note_velocity = n.volume.velocity
-
     return [NOTE_TOKS[note_pitch],
             DUR_TOKS[note_duration],
             TIM_TOKS[note_offset],
@@ -35,6 +33,7 @@ def midiToTokens(folder_path,f):
     # Iterate over the notes in the stream and extract the note information
     last_time = 0
     for note in stream.flat.notes:
+        last_time = note.offset*4
         if note.isNote:
             tokens+=noteToToken(note,last_time)
 
@@ -44,27 +43,27 @@ def midiToTokens(folder_path,f):
 
     return tokens
 
-def tokensToPieces(t,N):
+def tokensToPieces(t,n):
     '''
     parameters : t= tokens (4*(nb_tok))  
-    cut the list of tokens into pieces of length N, add PAD if necessary
+    cut the list of tokens into pieces of length n, add PAD if necessary
     '''
     pieces = []
     nb_tok = (len(t))//4
-    for i in range(nb_tok-N+1):
-        pieces.append(t[4*i:4*i+N])
+    for i in range(nb_tok-n+1):
+        pieces.append(t[4*i:4*i+n])
     return pieces
 
 def pieceToInputTarget(p):
     '''
-    return a couple of vectors (input, target) with input = SOS + piece; target = piece + EOS
+    return a couple of vectors (input, target) with input = SOS + piece - last_note; target = piece 
     '''
     input_p = cv_sos()
     target_p = []
-    for i in range(len(p)//4):
+    for i in range(len(p)//4-1):
         input_p+= custom_vocab(p[4*i:4*(i+1)])
         target_p += custom_vocab(p[4*i:4*(i+1)])
-    target_p += cv_eos()
+    target_p += custom_vocab(p[4*(len(p)//4-1):4*(len(p)//4)])
     return(input_p,target_p)
 
 def folderToVectInputTarget(folder_path,N):
@@ -75,6 +74,7 @@ def folderToVectInputTarget(folder_path,N):
     vectTarget = []
     file_names = os.listdir(folder_path)
     for f in file_names:
+        print(f)
         tokens = midiToTokens(folder_path,f)
         pieces = tokensToPieces(tokens,4*N)
         for p in pieces:
