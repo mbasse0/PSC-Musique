@@ -12,9 +12,9 @@ opt = torch.optim.SGD(model.parameters(), lr=0.01)
 loss_fn = nn.CrossEntropyLoss()
 """
 
-dataloader = dataloader("../Data/", batch_size=32, N=25)
+dataloader = dataloader("./Data/", batch_size=32, N=25)
 
 trainer = pl.trainer()
 trainer.fit(model, dataloader, dataloader)
 
-torch.save(model, "../model.pth")
+torch.save(model, "./model.pth")
