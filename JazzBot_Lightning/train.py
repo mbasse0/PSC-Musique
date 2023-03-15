@@ -1,6 +1,7 @@
 from model import *
 from data_loader import *
 from config import *
+import pytorch_lightning as pl
 
 def train_loop(model, opt, loss_fn, dataloader):
     model.train()
