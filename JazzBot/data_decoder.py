@@ -1,5 +1,7 @@
 import music21
 from music21 import * 
+from vocab import *
+
 
 
 
