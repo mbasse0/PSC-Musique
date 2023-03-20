@@ -18,10 +18,6 @@ class MyDataset(Dataset):
 
 
 class Transformer(nn.Module):
-    """
-    Model from "A detailed guide to Pytorch's nn.Transformer() module.", by
-    Daniel Melchor: https://medium.com/p/c80afbc9ffb1/
-    """
     # Constructor
     def __init__(
         self,
@@ -51,25 +47,36 @@ class Transformer(nn.Module):
             dropout=dropout_p,
             batch_first = True
         )
-        self.out = nn.Linear(dim_model, num_tokens)
-        '''
-        Créer les 3 autres out
-        '''
+        self.out1 = nn.Linear(dim_model, num_tokens)
+        self.out2 = nn.Linear(dim_model, num_tokens)
+        self.out3 = nn.Linear(dim_model, num_tokens)
+        self.out4 = nn.Linear(dim_model, num_tokens)
+
     # A modifier pour utiliser 4 out functions différentes selon les cas    
     def forward(self, src, tgt, tgt_mask=None, src_pad_mask=None, tgt_pad_mask=None):
         # Src size must be (batch_size, src sequence length)
         # Tgt size must be (batch_size, tgt sequence length)
-
+        prev_token = tgt[:,-1]
         # Embedding + positional encoding - Out size = (batch_size, sequence length, dim_model)
-        
         src = self.embedding(src) * math.sqrt(self.dim_model)
         tgt = self.embedding(tgt) * math.sqrt(self.dim_model)
         src = self.positional_encoder(src)
         tgt = self.positional_encoder(tgt)
         
         transformer_out = self.transformer(src, tgt, tgt_mask=tgt_mask, src_key_padding_mask=src_pad_mask, tgt_key_padding_mask=tgt_pad_mask)
-        out = self.out(transformer_out)
-        
+
+        # Pour toutes les valeurs du batch size, on passe le résultat du transformer (de la taille de l'embeddding) dans la couche out adaptée afin d'obtenir un output final de la taille du vocab
+        for d in range(len(prev_token)):
+            type_tok = itos_vocab[prev_token[d]][0]
+            if type_tok =='n':
+                out = self.out1(transformer_out)
+            elif type_tok=='d':
+                out = self.out2(transformer_out)
+            elif type_tok=='t':
+                out = self.out3(transformer_out)
+            elif type_tok=='v':
+                out = self.out4(transformer_out)
+            
         return out
 
     # Genere un masque triangulaire  
