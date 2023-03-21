@@ -20,5 +20,6 @@ Pour télécharger les databases:
 GiantMIDI : https://github.com/bytedance/GiantMIDI-Piano/blob/master/disclaimer.md
 Télécharger le lien Google Drive
 WJD : https://jazzomat.hfm-weimar.de/download/download.html
-Le lien contient : - un lien de téléchargement du fichier .db (où les mélodies sont formatées en séquences de string dans une colonne de la database)
+Le lien contient : 
+- un lien de téléchargement du fichier .db (où les mélodies sont formatées en séquences de string dans une colonne de la database)
 - un ZIP contenant tous les MIDI de la Database (plus facile à utiliser pour nous), en descendant
