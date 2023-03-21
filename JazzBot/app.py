@@ -11,6 +11,8 @@ from data_processor import *
 from vocab import *
 from decoding import *
 
+st.title("JazzBot")
+
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 state_dict = torch.load("./modelperf.pth",map_location=torch.device(device))
 model = Transformer(num_tokens=len(CV), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=4, dropout_p=0.1).to(device)
