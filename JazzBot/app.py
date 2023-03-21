@@ -7,40 +7,52 @@ import os
 
 from config import *
 from model import *
-from data_processor import *
 from vocab import *
 from data_decoder import *
-from data_decoder import *
+from data_encoder import *
+from generate import *
+
 st.title("JazzBot")
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-state_dict = torch.load("./modelperf.pth",map_location=torch.device(device))
+state_dict = torch.load("./model4out.pth",map_location=torch.device(device))
 model = Transformer(num_tokens=len(custom_vocab), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=4, dropout_p=0.1).to(device)
 model.load_state_dict(state_dict)
 model.eval()
 
 file = st.file_uploader("Upload a MIDI file",type=['mid'])
-with open(os.path.join("./midi_data/",file.name),"wb") as f:
-    f.write(file.getbuffer())
 
+if file is not None:
+    with open(os.path.join("./app_data/", file.name), "wb") as f:
+        f.write(file.getbuffer())
+
+clicked = False
 if file is not None:
     clicked = st.button('Generate')
 
 if clicked:
-    toks = midifolderToTokens("midi_data")
-    y_input = torch.tensor(pieceToInputTarget(tokensToPieces(toks,4*N)[0])[0]).to(device)
-    tgt_mask = model.get_tgt_mask(y_input.size(0)).to(device)
-    pred = model(torch.tensor([0]*(4*N-1)).to(device), y_input, tgt_mask)
-    # Get the index of the highest probability for each token in the sequence
-    predicted_tokens = torch.argmax(pred, dim=2)
+    taille_genere = 850
+    start_tokens = midiToTokens("./app_data/"+ file.name)
+    print("taille initiale", len(start_tokens))
+    print("taille_generée:", taille_genere)
 
-    # Convert the indices to token strings using the CV vocabulary
-    input_strings = [itos[token.item()] for token in y_input]
-    predicted_strings = [itos[token.item()] for token in predicted_tokens[0]]
+    start_tokens = [custom_vocab[el] for el in start_tokens]
+    # Generate a sequence of tokens
+    generated_tokens = generate_sequence(model, start_tokens, max_length=taille_genere, temperature=1.0)
+    
+    #On peut sauver la prédiction dans un array
+    #np.save("generation4.npy", decoded_tokens)
 
-    # Print the predicted token sequence as a string
-    print(" ".join(predicted_strings))
+    ## CONVERSION DE LA SEQUENCE EN MIDI
+    generated_tokens = [itos_vocab[el] for el in generated_tokens]
+    tokens_to_midi(generated_tokens, "result.mid", 120)
+    # st.download_button("Download", data="result.mid", file_name="result.mid", mime="audio/midi")
 
-    tokens_to_midi(predicted_tokens,"result.mid")
+    with open("result.mid", "rb") as f:
+        midi_data = f.read()
 
-    st.download_button("Download","result.mid")
+    with open("result.mid", "rb") as f:
+        midi_data = f.read()
+
+    st.download_button("Download", data=midi_data, file_name="result.mid", mime="audio/midi")
+
