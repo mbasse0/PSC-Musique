@@ -22,6 +22,9 @@ model.eval()
 
 file = st.file_uploader("Upload a MIDI file",type=['mid'])
 
+bpm = st.slider("BPM",min_value=60,max_value=200,value=120)
+maxl = st.slider("Maximum length of the generated sequence",min_value=20,max_value=400,value=100)
+
 if file is not None:
     with open(os.path.join("./app_data/", file.name), "wb") as f:
         f.write(file.getbuffer())
@@ -30,26 +33,25 @@ clicked = False
 if file is not None:
     clicked = st.button('Generate')
 
+
+
 if clicked:
-    taille_genere = 850
     start_tokens = midiToTokens("./app_data/"+ file.name)
     print("taille initiale", len(start_tokens))
-    print("taille_generée:", taille_genere)
+    print("taille_generée:", maxl)
+    print("Device:", device)
 
     start_tokens = [custom_vocab[el] for el in start_tokens]
     # Generate a sequence of tokens
-    generated_tokens = generate_sequence(model, start_tokens, max_length=taille_genere, temperature=1.0)
+    generated_tokens = generate_sequence(model, start_tokens, max_length=maxl+len(start_tokens), temperature=1.0)
     
     #On peut sauver la prédiction dans un array
     #np.save("generation4.npy", decoded_tokens)
 
     ## CONVERSION DE LA SEQUENCE EN MIDI
     generated_tokens = [itos_vocab[el] for el in generated_tokens]
-    tokens_to_midi(generated_tokens, "result.mid", 120)
+    tokens_to_midi(generated_tokens, "result.mid", bpm)
     # st.download_button("Download", data="result.mid", file_name="result.mid", mime="audio/midi")
-
-    with open("result.mid", "rb") as f:
-        midi_data = f.read()
 
     with open("result.mid", "rb") as f:
         midi_data = f.read()
