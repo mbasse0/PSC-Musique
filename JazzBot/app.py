@@ -9,7 +9,7 @@ from config import *
 from model import *
 from data_processor import *
 from vocab import *
-from decoding import *
+from data_decoder import *
 
 st.title("JazzBot")
 
