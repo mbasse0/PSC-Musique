@@ -3,6 +3,7 @@ import math
 from torch.utils.data import Dataset, DataLoader
 from positional_encoding import *
 from config import *
+from vocab import *
 
 class MyDataset(Dataset):
     def __init__(self, input_data, output_data):
