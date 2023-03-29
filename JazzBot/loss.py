@@ -34,7 +34,7 @@ class rhythmLoss(nn.Module):
     Inspired by https://towardsdatascience.com/implementing-custom-loss-functions-in-pytorch-50739f9e0ee1
     """
 
-    def __init__(self,weight_,coeff_) -> None:
+    def __init__(self,coeff_) -> None:
         """
         coeff_ : float[5] :
             0 : weigh of token type error penalization
@@ -44,7 +44,6 @@ class rhythmLoss(nn.Module):
             4 : weigh of velocity penalization
         """
         super(rhythmLoss,self).__init__()
-        self.weight = weight_
         self.coef = coeff_
 
     def forward(self, output : Tensor, target : Tensor) -> Tensor:
@@ -63,7 +62,7 @@ class rhythmLoss(nn.Module):
                 elif itos_vocab[output[i]] == 't':
                     mask[i] = self.coef[3] * np.abs((float(itos_vocab[output[i]][1:]) - float(itos_vocab[target[i]][1:])))/100
                 else:
-                    mask[i] = self.coef[3] * np.abs((float(itos_vocab[output[i]][1:]) - float(itos_vocab[target[i]][1:])))/128
+                    mask[i] = self.coef[4] * np.abs((float(itos_vocab[output[i]][1:]) - float(itos_vocab[target[i]][1:])))/128
 
         high_cost = (loss * mask.float()).mean()
         return loss + high_cost
