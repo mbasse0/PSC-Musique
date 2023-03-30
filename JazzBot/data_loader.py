@@ -1,4 +1,3 @@
-from data_processor import *
 from model import MyDataset
 from torch.utils.data import DataLoader
 

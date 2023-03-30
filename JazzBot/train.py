@@ -28,7 +28,7 @@ def train_loop(model, opt, loss_fn, dataloader):
 
         # Standard training except we pass in y_input and tgt_mask
         pred = model(X, y_input, tgt_mask)
-
+        print("pred shape", pred.shape)
         # Permute pred to have batch size first again
         pred = pred.permute(0, 2, 1)      
         loss = loss_fn(pred, y_expected)
