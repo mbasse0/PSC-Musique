@@ -1,9 +1,8 @@
 import torch.nn as nn
-import pytorch_lightning as pl
 import math
 import torch
 
-class PositionalEncoding(pl.LightningModule):
+class PositionalEncoding(nn.Module):
     def __init__(self, dim_model, dropout_p, max_len):
         super().__init__()
         # Modified version from: https://pytorch.org/tutorials/beginner/transformer_tutorial.html
