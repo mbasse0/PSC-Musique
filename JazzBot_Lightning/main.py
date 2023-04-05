@@ -4,7 +4,7 @@ from data_encoder import *
 from data_decoder import *
 from train import *
 from dataset import *
-
+import pytorch_lightning as pl
 
 ## ENCODING DATA
 
@@ -32,19 +32,20 @@ rep_vect = [ [ custom_vocab[tok] for tok in morceau] for morceau in les_morceaux
 batch_size = 32
 dataloader = get_dataloader(input_vect, rep_vect, batch_size)
 
-
 ## ENTRAINEMENT
 
-device = "cuda" if torch.cuda.is_available() else "cpu"
-model = Transformer(
-    num_tokens=len(custom_vocab), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=4, dropout_p=0.1
-).to(device)
-
+"""
 opt = torch.optim.SGD(model.parameters(), lr=0.01)
 loss_fn = nn.CrossEntropyLoss()
+"""
 
-epochs = 5
-train_loss_list = fit(model, opt, loss_fn, dataloader, epochs)
+model = Transformer(
+   num_tokens=len(CV), dim_model=256, num_heads=2, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1
+)
+
+trainer = pl.Trainer()
+trainer.fit(model, dataloader, dataloader)
+
 # save the model weights to a file
 torch.save(model.state_dict(), 'model4out_rect.pth')
 
