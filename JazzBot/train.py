@@ -1,5 +1,6 @@
 from model import *
-from data_loader import *
+from data_encoder import *
+from data_decoder import *
 from config import *
 from vocab import *
 import torch 
