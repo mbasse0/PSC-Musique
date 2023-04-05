@@ -7,7 +7,7 @@ import torch
 import pytorch_lightning as pl
 
 model = Transformer(
-   num_tokens=len(CV), dim_model=256, num_heads=2, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1
+   num_tokens=len(custom_vocab), dim_model=256, num_heads=2, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1
 )
 
 """
