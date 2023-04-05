@@ -4,6 +4,7 @@ from torch.utils.data import Dataset, DataLoader
 from positional_encoding import *
 from config import *
 from vocab import *
+import pytorch_lightning as pl
 
 class MyDataset(Dataset):
     def __init__(self, input_data, output_data):
@@ -18,7 +19,7 @@ class MyDataset(Dataset):
         return input_tensor, output_tensor
 
 
-class Transformer(nn.Module):
+class Transformer(pl.LightningModule):
     # Constructor
     def __init__(
         self,
