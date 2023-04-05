@@ -1,4 +1,4 @@
-import torch.nn as nn
+from torch import nn, optim
 import math
 from torch.utils.data import Dataset, DataLoader
 from positional_encoding import *
@@ -103,3 +103,30 @@ class Transformer(pl.LightningModule):
     #     # If matrix = [1,2,3,0,0,0] where pad_token=0, the result mask is
     #     # [False, False, False, True, True, True]
     #     return (matrix == pad_token)
+
+    
+    def configure_optimizers(self):
+        optimizer = optim.Adam(self.parameters(), lr=1e-3)
+        return optimizer
+    
+    def training_step(self, batch, batch_idx):
+        y_input, y_expected = batch
+        print(y_input.size(), y_expected.size())
+
+        # X est ce qu'on donne à l'encoder. Un vecteur nul dans notre cas en l'absence d'informations contextuelles
+        X = torch.tensor([0]*len(y_input))
+        X, y_input, y_expected = X.clone().detach() , y_input.clone().detach() , y_expected.clone().detach() 
+
+        # Get mask to mask out the next words
+        sequence_length = y_input.size(1)
+        tgt_mask = self.get_tgt_mask(sequence_length)
+
+        # Standard training except we pass in y_input and tgt_mask
+        pred = self(X, y_input, tgt_mask)
+
+        # Permute pred to have batch size first again
+        pred = pred.permute(0, 2, 1)  
+        print(pred.size(), y_expected.size())
+        loss = nn.functional.mse_loss(pred, y_expected)
+        self.log('Training loss', loss)
+        return loss
