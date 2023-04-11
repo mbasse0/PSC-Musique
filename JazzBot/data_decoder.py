@@ -2,11 +2,6 @@ import music21
 from music21 import * 
 from vocab import *
 
-
-
-
-
-
 def tokens_to_stream(token_array):
     # token_array attend un array de tokens de type string (par exemple ['n58','d2','t5','v106']])
     # Initialize variables to keep track of note properties
