@@ -1,23 +1,9 @@
 from torch import nn, optim
 import math
-from torch.utils.data import Dataset, DataLoader
 from positional_encoding import *
-from config import *
+#from config import *
 from vocab import *
 import pytorch_lightning as pl
-
-class MyDataset(Dataset):
-    def __init__(self, input_data, output_data):
-        self.input_data = input_data
-        self.output_data = output_data    
-    def __len__(self):
-        return len(self.input_data)
-    
-    def __getitem__(self, idx):
-        input_tensor = torch.tensor(self.input_data[idx], dtype=torch.long)
-        output_tensor = torch.tensor(self.output_data[idx], dtype=torch.long)
-        return input_tensor, output_tensor
-
 
 class Transformer(pl.LightningModule):
     # Constructor
@@ -66,6 +52,7 @@ class Transformer(pl.LightningModule):
         tgt = self.positional_encoder(tgt)
         
         transformer_out = self.transformer(src, tgt, tgt_mask=tgt_mask, src_key_padding_mask=src_pad_mask, tgt_key_padding_mask=tgt_pad_mask)
+        # Out size = (batch_size, sequence length, dim_model) 
 
         # Pour toutes les valeurs du batch size, on passe le résultat du transformer (de la taille de l'embeddding) dans la couche out adaptée afin d'obtenir un output final de la taille du vocab
         for d in range(len(prev_token)):
@@ -78,7 +65,7 @@ class Transformer(pl.LightningModule):
                 out = self.out3(transformer_out)
             elif type_tok=='v':
                 out = self.out4(transformer_out)
-            
+        #outSize définie par la outSize de self.out1 (num_token)
         return out
 
     # Genere un masque triangulaire  
@@ -106,27 +93,31 @@ class Transformer(pl.LightningModule):
 
     
     def configure_optimizers(self):
-        optimizer = optim.Adam(self.parameters(), lr=1e-3)
+        optimizer = optim.Adam(self.parameters(), lr=0.05)
         return optimizer
     
     def training_step(self, batch, batch_idx):
         y_input, y_expected = batch
-        print(y_input.size(), y_expected.size())
+        #y_input, y_expected sont tokenizés ne sont pas embeddés ce sont des batchs de séquences de nombres entre 0 et 1417
+        # appartiennent à [0,1417]^(120)^(batchsize)
 
         # X est ce qu'on donne à l'encoder. Un vecteur nul dans notre cas en l'absence d'informations contextuelles
         X = torch.tensor([0]*len(y_input))
-        X, y_input, y_expected = X.clone().detach() , y_input.clone().detach() , y_expected.clone().detach() 
+        #y_input, y_expected = y_input.to(self.device), y_expected.to(self.device)
+        X, y_input, y_expected = X.clone().detach().to(self.device) , y_input.clone().detach().to(self.device) , y_expected.clone().detach().to(self.device) 
 
         # Get mask to mask out the next words
         sequence_length = y_input.size(1)
         tgt_mask = self.get_tgt_mask(sequence_length)
 
         # Standard training except we pass in y_input and tgt_mask
-        pred = self(X, y_input, tgt_mask)
+        pred = self(X, y_input, tgt_mask.to(self.device))
+        #pred est embédé, chaque token est un vetceur one hot de {0,1}^1417
+        #donc pred appartient à {0,1}^1417^120^batchsize
 
         # Permute pred to have batch size first again
-        pred = pred.permute(0, 2, 1)  
-        print(pred.size(), y_expected.size())
-        loss = nn.functional.mse_loss(pred, y_expected)
+        pred = pred.permute(0, 2, 1)
+        lossF = nn.CrossEntropyLoss()
+        loss = lossF(pred, y_expected)
         self.log('Training loss', loss)
         return loss

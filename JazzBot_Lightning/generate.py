@@ -14,7 +14,7 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 def generate_sequence(model, start_tokens, max_length=100, temperature=1.0):
     # start_tokens doit être une liste d'indices
     model.eval()
-
+    model = model.to(device)
     # L'input donné à l'encoder (vecteur nul dans notre cas, comme pendant l'entraînement)
     taille_bloc = 120
     X = torch.tensor([0]*taille_bloc).unsqueeze(0).to(device)

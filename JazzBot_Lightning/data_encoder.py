@@ -1,6 +1,4 @@
 from vocab import *
-import music21
-import numpy as np
 from tqdm import tqdm
 from music21 import *
 import os

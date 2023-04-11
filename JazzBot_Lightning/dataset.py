@@ -1,6 +1,6 @@
 import torch
 from torch.utils.data import Dataset, DataLoader
-from vocab import *
+#from vocab import *
 
 
 # Define the dataset
@@ -21,5 +21,5 @@ def get_dataloader(input_vect, rep_vect, batch_size):
     # Create the dataset
     dataset = MyDataset(input_vect, rep_vect)
     # Create a dataloader
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=12)
     return dataloader
