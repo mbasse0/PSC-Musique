@@ -4,6 +4,7 @@ from positional_encoding import *
 #from config import *
 from vocab import *
 import pytorch_lightning as pl
+#test
 
 class Transformer(pl.LightningModule):
     # Constructor
