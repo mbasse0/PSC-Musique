@@ -25,8 +25,8 @@ class Transformer(pl.LightningModule):
         # LAYERS
         self.positional_encoder = PositionalEncoding(
             dim_model=dim_model, dropout_p=dropout_p, max_len=5000
-        )
-        self.embedding = nn.Embedding(num_tokens, dim_model)
+        ).to(self.device)
+        self.embedding = nn.Embedding(num_tokens, dim_model).to(self.device)
         self.transformer = nn.Transformer(
             d_model=dim_model,
             nhead=num_heads,
@@ -34,11 +34,11 @@ class Transformer(pl.LightningModule):
             num_decoder_layers=num_decoder_layers,
             dropout=dropout_p,
             batch_first = True
-        )
-        self.out1 = nn.Linear(dim_model, num_tokens)
-        self.out2 = nn.Linear(dim_model, num_tokens)
-        self.out3 = nn.Linear(dim_model, num_tokens)
-        self.out4 = nn.Linear(dim_model, num_tokens)
+        ).to(self.device)
+        self.out1 = nn.Linear(dim_model, num_tokens).to(self.device)
+        self.out2 = nn.Linear(dim_model, num_tokens).to(self.device)
+        self.out3 = nn.Linear(dim_model, num_tokens).to(self.device)
+        self.out4 = nn.Linear(dim_model, num_tokens).to(self.device)
 
     # A modifier pour utiliser 4 out functions différentes selon les cas    
     def forward(self, src, tgt, tgt_mask=None, src_pad_mask=None, tgt_pad_mask=None):
@@ -104,11 +104,11 @@ class Transformer(pl.LightningModule):
         # X est ce qu'on donne à l'encoder. Un vecteur nul dans notre cas en l'absence d'informations contextuelles
         X = torch.tensor([0]*len(y_input))
         #y_input, y_expected = y_input.to(self.device), y_expected.to(self.device)
-        X, y_input, y_expected = X.clone().detach().to(self.device) , y_input.clone().detach().to(self.device) , y_expected.clone().detach().to(self.device) 
+        X, y_input, y_expected = X.to(self.device).clone().detach() , y_input..to(self.device).clone().detach(), y_expected.to(self.device).clone().detach()
 
         # Get mask to mask out the next words
         sequence_length = y_input.size(1)
-        tgt_mask = self.get_tgt_mask(sequence_length)
+        tgt_mask = self.get_tgt_mask(sequence_length).clone()
 
         # Standard training except we pass in y_input and tgt_mask
         pred = self(X, y_input, tgt_mask.to(self.device))
@@ -116,7 +116,7 @@ class Transformer(pl.LightningModule):
         #donc pred appartient à {0,1}^1417^120^batchsize
 
         # Permute pred to have batch size first again
-        pred = pred.permute(0, 2, 1)
+        pred = pred.permute(0, 2, 1).clone()
         lossF = nn.CrossEntropyLoss()
         loss = lossF(pred, y_expected)
         self.log('Training loss', loss)

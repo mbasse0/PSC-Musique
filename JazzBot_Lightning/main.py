@@ -7,6 +7,7 @@ from data_decoder import *
 ##from train import *
 from dataset import *
 import pytorch_lightning as pl
+import config
 
 ## ENCODING DATA
 
@@ -26,13 +27,13 @@ import pytorch_lightning as pl
 # # np.save('input_dataset2.npy', input_vect)
 # # np.save('rep_dataset2.npy', rep_vect)
 
-# input_vect = np.load('input_weimar.npy')
-# rep_vect = np.load('rep_weimar.npy')
+input_vect = np.load('input_weimar.npy')
+rep_vect = np.load('rep_weimar.npy')
 
 # ## CREATION DATASET ET DATALOADER
 
-# batch_size = 32
-# dataloader = get_dataloader(input_vect, rep_vect, batch_size)
+batch_size = 32
+dataloader = get_dataloader(input_vect, rep_vect, batch_size)
 
 ## ENTRAINEMENT
 
@@ -40,16 +41,16 @@ model = Transformer(
    num_tokens=len(custom_vocab), dim_model=256, num_heads=2, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.05
 )
 
-# ## On définit un trainer pl
-# # Sans DDP :
-# trainer = pl.Trainer(accelerator='auto', gpus=1, max_epochs=15, log_every_n_steps=20)
-# # Pour DDP (pas fonctionnel encore):
-# #trainer = pl.Trainer(accelerator='auto', gpus=1, max_epochs=1, log_every_n_steps=10, devices=2, strategy="ddp", num_nodes=2)
+## On définit un trainer pl
+# Sans DDP :
+#trainer = pl.Trainer(accelerator='auto', gpus=1, max_epochs=3, log_every_n_steps=20)
+# Pour DDP (pas fonctionnel encore):
+trainer = pl.Trainer(accelerator='auto', gpus=1, max_epochs=1, log_every_n_steps=10, devices=2, strategy="ddp", num_nodes=2)
 
-# trainer.fit(model, dataloader, dataloader)
+trainer.fit(model, dataloader, dataloader)
 
-# # save the model weights to a file
-# torch.save(model.state_dict(), 'model4out_rect.pth')
+# save the model weights to a file
+torch.save(model.state_dict(), 'model4out_rect.pth')
 
 
 # ##GENERER SEQ
