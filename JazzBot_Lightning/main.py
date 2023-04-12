@@ -58,7 +58,7 @@ torch.save(model.state_dict(), 'model4out_rect.pth')
 # Define the start tokens for your inference. start_tokens expects an array of indices in the vocab
 start_tokens = [custom_vocab["n60"], custom_vocab["d1"], custom_vocab["t1"], custom_vocab["v64"]]
 # Generate a sequence of tokens
-model.load_state_dict(torch.load('model4out.pth'))
+model.load_state_dict(torch.load('model4out_rect.pth'))
 generated_tokens = generate_sequence(model, start_tokens, max_length=300, temperature=1)
 
 # Decode the generated tokens into the original format
