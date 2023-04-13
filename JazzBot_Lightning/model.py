@@ -93,7 +93,7 @@ class Transformer(pl.LightningModule):
 
     
     def configure_optimizers(self):
-        optimizer = torch.optim.SGD(self.parameters(), lr=0.01)
+        optimizer = torch.optim.SGD(self.parameters(), lr=0.1)
         return optimizer
     
     def training_step(self, batch):
