@@ -25,8 +25,8 @@ class Transformer(pl.LightningModule):
         # LAYERS
         self.positional_encoder = PositionalEncoding(
             dim_model=dim_model, dropout_p=dropout_p, max_len=5000
-        ).to(self.device)
-        self.embedding = nn.Embedding(num_tokens, dim_model).to(self.device)
+        )
+        self.embedding = nn.Embedding(num_tokens, dim_model)
         self.transformer = nn.Transformer(
             d_model=dim_model,
             nhead=num_heads,
@@ -34,11 +34,11 @@ class Transformer(pl.LightningModule):
             num_decoder_layers=num_decoder_layers,
             dropout=dropout_p,
             batch_first = True
-        ).to(self.device)
-        self.out1 = nn.Linear(dim_model, num_tokens).to(self.device)
-        self.out2 = nn.Linear(dim_model, num_tokens).to(self.device)
-        self.out3 = nn.Linear(dim_model, num_tokens).to(self.device)
-        self.out4 = nn.Linear(dim_model, num_tokens).to(self.device)
+        )
+        self.out1 = nn.Linear(dim_model, num_tokens)
+        self.out2 = nn.Linear(dim_model, num_tokens)
+        self.out3 = nn.Linear(dim_model, num_tokens)
+        self.out4 = nn.Linear(dim_model, num_tokens)
 
     # A modifier pour utiliser 4 out functions différentes selon les cas    
     def forward(self, src, tgt, tgt_mask=None, src_pad_mask=None, tgt_pad_mask=None):
@@ -46,12 +46,12 @@ class Transformer(pl.LightningModule):
         # Tgt size must be (batch_size, tgt sequence length)
         prev_token = tgt[:,-1]
         # Embedding + positional encoding - Out size = (batch_size, sequence length, dim_model)
-        src = self.embedding(src.clone().detach()) * math.sqrt(self.dim_model)
-        tgt = self.embedding(tgt.clone().detach()) * math.sqrt(self.dim_model)
-        src = self.positional_encoder(src.clone().detach())
-        tgt = self.positional_encoder(tgt.clone().detach())
+        src = self.embedding(src) * math.sqrt(self.dim_model)
+        tgt = self.embedding(tgt) * math.sqrt(self.dim_model)
+        src = self.positional_encoder(src)
+        tgt = self.positional_encoder(tgt)
         
-        transformer_out = self.transformer(src, tgt, tgt_mask=tgt_mask, src_key_padding_mask=src_pad_mask, tgt_key_padding_mask=tgt_pad_mask).clone()
+        transformer_out = self.transformer(src, tgt, tgt_mask=tgt_mask, src_key_padding_mask=src_pad_mask, tgt_key_padding_mask=tgt_pad_mask)
         # Out size = (batch_size, sequence length, dim_model) 
 
         # Pour toutes les valeurs du batch size, on passe le résultat du transformer (de la taille de l'embeddding) dans la couche out adaptée afin d'obtenir un output final de la taille du vocab
@@ -66,7 +66,7 @@ class Transformer(pl.LightningModule):
             elif type_tok=='v':
                 out = self.out4(transformer_out)
         #outSize définie par la outSize de self.out1 (num_token)
-        return out.clone()
+        return out
 
     # Genere un masque triangulaire  
     def get_tgt_mask(self, size) -> torch.tensor:
@@ -96,7 +96,7 @@ class Transformer(pl.LightningModule):
         optimizer = torch.optim.SGD(self.parameters(), lr=0.01)
         return optimizer
     
-    def training_step(self, batch, batch_idx):
+    def training_step(self, batch):
         y_input, y_expected = batch
         #y_input, y_expected sont tokenizés ne sont pas embeddés ce sont des batchs de séquences de nombres entre 0 et 1417
         # appartiennent à [0,1417]^(120)^(batchsize)
@@ -108,15 +108,15 @@ class Transformer(pl.LightningModule):
 
         # Get mask to mask out the next words
         sequence_length = y_input.size(1)
-        tgt_mask = self.get_tgt_mask(sequence_length).clone().detach()
+        tgt_mask = self.get_tgt_mask(sequence_length).to(self.device)
 
         # Standard training except we pass in y_input and tgt_mask
-        pred = self(X, y_input, tgt_mask.to(self.device))
+        pred = self(X, y_input, tgt_mask)
         #pred est embédé, chaque token est un vetceur one hot de {0,1}^1417
         #donc pred appartient à {0,1}^1417^120^batchsize
 
         # Permute pred to have batch size first again
-        pred = pred.permute(0, 2, 1).clone()
+        pred = pred.permute(0, 2, 1)
         lossF = nn.CrossEntropyLoss()
         loss = lossF(pred, y_expected)
         self.log('Training loss', loss)

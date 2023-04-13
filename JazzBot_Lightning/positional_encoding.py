@@ -25,7 +25,8 @@ class PositionalEncoding(pl.LightningModule):
         
         # Saving buffer (same as parameter without gradients needed)
         pos_encoding = pos_encoding.unsqueeze(0).transpose(0, 1)
-        self.register_buffer("pos_encoding",pos_encoding)
+        # self.register_buffer("pos_encoding",pos_encoding)
+        self.register_parameter("pos_encoding", nn.Parameter(pos_encoding, requires_grad=False))
         
     def forward(self, token_embedding: torch.tensor) -> torch.tensor:
         # Residual connection + pos encoding

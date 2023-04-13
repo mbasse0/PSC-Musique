@@ -43,9 +43,9 @@ model = Transformer(
 
 ## On définit un trainer pl
 # Sans DDP :
-#trainer = pl.Trainer(accelerator='auto', gpus=1, max_epochs=3, log_every_n_steps=20)
+# trainer = pl.Trainer(accelerator='auto', gpus=1, max_epochs=1, log_every_n_steps=20)
 # Pour DDP (pas fonctionnel encore):
-trainer = pl.Trainer(accelerator='auto', gpus=1, max_epochs=1, log_every_n_steps=10, devices=2, strategy="ddp", num_nodes=2)
+trainer = pl.Trainer(accelerator='auto', gpus=1, max_epochs=1, log_every_n_steps=20, devices=1, strategy="ddp", num_nodes=2)
 
 trainer.fit(model, dataloader, dataloader)
 
