@@ -38,14 +38,14 @@ dataloader = get_dataloader(input_vect, rep_vect, batch_size)
 ## ENTRAINEMENT
 
 model = Transformer(
-   num_tokens=len(custom_vocab), dim_model=256, num_heads=2, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.05
+   num_tokens=len(custom_vocab), dim_model=256, num_heads=2, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1
 )
 
 ## On définit un trainer pl
 # Sans DDP :
-#trainer = pl.Trainer(accelerator='auto', gpus=1, max_epochs=3, log_every_n_steps=20)
+trainer = pl.Trainer(accelerator='auto', gpus=1, max_epochs=1, log_every_n_steps=20)
 # Pour DDP (pas fonctionnel encore):
-trainer = pl.Trainer(accelerator='auto', gpus=1, max_epochs=1, log_every_n_steps=10, devices=2, strategy="ddp", num_nodes=2)
+# trainer = pl.Trainer(accelerator='cpu',gpus=1, max_epochs=1, log_every_n_steps=10, devices=1, strategy="ddp", num_nodes=2)
 
 trainer.fit(model, dataloader, dataloader)
 
@@ -58,7 +58,7 @@ torch.save(model.state_dict(), 'model4out_rect.pth')
 # Define the start tokens for your inference. start_tokens expects an array of indices in the vocab
 start_tokens = [custom_vocab["n60"], custom_vocab["d1"], custom_vocab["t1"], custom_vocab["v64"]]
 # Generate a sequence of tokens
-model.load_state_dict(torch.load('model4out.pth'))
+model.load_state_dict(torch.load('model4out_rect.pth'))
 generated_tokens = generate_sequence(model, start_tokens, max_length=300, temperature=1)
 
 # Decode the generated tokens into the original format

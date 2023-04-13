@@ -46,12 +46,12 @@ class Transformer(pl.LightningModule):
         # Tgt size must be (batch_size, tgt sequence length)
         prev_token = tgt[:,-1]
         # Embedding + positional encoding - Out size = (batch_size, sequence length, dim_model)
-        src = self.embedding(src) * math.sqrt(self.dim_model)
-        tgt = self.embedding(tgt) * math.sqrt(self.dim_model)
-        src = self.positional_encoder(src)
-        tgt = self.positional_encoder(tgt)
+        src = self.embedding(src.clone().detach()) * math.sqrt(self.dim_model)
+        tgt = self.embedding(tgt.clone().detach()) * math.sqrt(self.dim_model)
+        src = self.positional_encoder(src.clone().detach())
+        tgt = self.positional_encoder(tgt.clone().detach())
         
-        transformer_out = self.transformer(src, tgt, tgt_mask=tgt_mask, src_key_padding_mask=src_pad_mask, tgt_key_padding_mask=tgt_pad_mask)
+        transformer_out = self.transformer(src, tgt, tgt_mask=tgt_mask, src_key_padding_mask=src_pad_mask, tgt_key_padding_mask=tgt_pad_mask).clone()
         # Out size = (batch_size, sequence length, dim_model) 
 
         # Pour toutes les valeurs du batch size, on passe le résultat du transformer (de la taille de l'embeddding) dans la couche out adaptée afin d'obtenir un output final de la taille du vocab
@@ -66,7 +66,7 @@ class Transformer(pl.LightningModule):
             elif type_tok=='v':
                 out = self.out4(transformer_out)
         #outSize définie par la outSize de self.out1 (num_token)
-        return out
+        return out.clone()
 
     # Genere un masque triangulaire  
     def get_tgt_mask(self, size) -> torch.tensor:
@@ -108,7 +108,7 @@ class Transformer(pl.LightningModule):
 
         # Get mask to mask out the next words
         sequence_length = y_input.size(1)
-        tgt_mask = self.get_tgt_mask(sequence_length).clone()
+        tgt_mask = self.get_tgt_mask(sequence_length).clone().detach()
 
         # Standard training except we pass in y_input and tgt_mask
         pred = self(X, y_input, tgt_mask.to(self.device))
