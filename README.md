@@ -3,10 +3,12 @@
 - Calcul (CMAP ou clusterBR) (Henri)
 - Logbaord (Soto ?)
 - Hébergement de l'app (Soto ?)
+- Validation step
 - Database (Léonard)
 - Webapp piano roll tout synchro (Max)
 - Accords en encoder (Max)
 - Comprendre pourquoi 120 ? (Max et Henri)
+- Etude mapématique (avec sortie deterministe + validation step + logboard + calcul + database  au moins) lancer plusieurs simu avec un panel de paramètres pour prendre experimentalement la meilleure (en faisant varier batchsize, lr et peut être l'optimiseur)
 
 
 
