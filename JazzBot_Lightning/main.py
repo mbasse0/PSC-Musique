@@ -32,7 +32,7 @@ rep_vect = np.load('rep_weimar.npy')
 
 # ## CREATION DATASET ET DATALOADER
 
-batch_size = 16
+batch_size = 8
 dataloader = get_dataloader(input_vect, rep_vect, batch_size)
 
 ## ENTRAINEMENT
