@@ -25,7 +25,8 @@ Le lien contient :
 - un ZIP contenant tous les MIDI de la Database (plus facile à utiliser pour nous), en descendant
 
 
-
+//
+//
 
 Pour entrainer en DDP sur plusieurs ordis, il faut
 - Décommenter la ligne de définition du Trainer version ddp et commenter celle sans ddp puis mettre le bon nombre de devices.
@@ -33,9 +34,9 @@ Pour entrainer en DDP sur plusieurs ordis, il faut
 
 - Se connecter en SSH sur autant de devices, activer le venv et entrer la commande suivante :
 
-(export MASTER_ADDR=Coccyx.polytechnique.fr
-export MASTER_PORT=45547 
-export NODE_RANK=0
+(export MASTER_ADDR=Coccyx.polytechnique.fr;
+export MASTER_PORT=45547;
+export NODE_RANK=0;
 python3 main.py)
 
 Les parenthèses permettent d'écrire plusieurs lignes d'un coup (compier tout le paragraphe d'un coup). Deux contraintes :
