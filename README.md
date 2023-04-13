@@ -1,3 +1,16 @@
+# Pistes d'amélioration
+- Sorties déterministes + loss adaptées (Pierre)
+- Calcul (CMAP ou clusterBR) (Henri)
+- Logbaord (Soto ?)
+- Hébergement de l'app (Soto ?)
+- Database (Léonard)
+- Webapp piano roll tout synchro (Max)
+- Accords en encoder (Max)
+- Comprendre pourquoi 120 ? (Max et Henri)
+
+
+
+
 # PSC-Musique
 PSC sur la génération de musique par intelligence artificielle
 
