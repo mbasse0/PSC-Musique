@@ -3,6 +3,7 @@
 - Calcul (CMAP ou clusterBR) (Henri) - mails envoyés
 - Logbaord (Soto ?) fait Henri
 - Hébergement de l'app (Soto ?) ticket panix fait
+- Validation dataloader
 - Validation step
 - Database (Léonard)
 - Webapp piano roll tout synchro (Max)
