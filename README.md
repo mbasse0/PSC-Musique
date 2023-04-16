@@ -1,8 +1,9 @@
 # Pistes d'amélioration
 - Sorties déterministes + loss adaptées (Pierre)
-- Calcul (CMAP ou clusterBR) (Henri)
-- Logbaord (Soto ?)
-- Hébergement de l'app (Soto ?)
+- Calcul (CMAP ou clusterBR) (Henri) - mails envoyés
+- Logbaord (Soto ?) fait Henri
+- Hébergement de l'app (Soto ?) ticket panix fait
+- Validation dataloader
 - Validation step
 - Database (Léonard)
 - Webapp piano roll tout synchro (Max)
