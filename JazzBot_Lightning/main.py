@@ -9,6 +9,7 @@ from dataset import *
 import pytorch_lightning as pl
 from config import *
 
+
 ## ENCODING DATA
 
 # # les_tokens = midifolderToTokens("midi_data")
@@ -32,7 +33,7 @@ rep_vect = np.load('rep_weimar.npy')
 
 # ## CREATION DATASET ET DATALOADER
 
-batch_size = 8
+batch_size = 32
 dataloader = get_dataloader(input_vect, rep_vect, batch_size)
 
 ## ENTRAINEMENT
@@ -42,10 +43,12 @@ model = Transformer(
 )
 
 ## On définit un trainer pl
+logger = pl.loggers.TensorBoardLogger(save_dir='/users/eleves-b/2021/henri.duprieu/PSCmusique/PSC-Musique/JazzBot_Lightning')
+
 # Sans DDP :
-# trainer = pl.Trainer(accelerator='auto', gpus=1, max_epochs=10, log_every_n_steps=20)
+trainer = pl.Trainer(accelerator='auto', gpus=1, max_epochs=1, log_every_n_steps=20)
 # Pour DDP (pas fonctionnel encore):
-trainer = pl.Trainer(accelerator='auto', gpus=1, max_epochs=10, log_every_n_steps=20, devices=1, strategy="ddp", num_nodes=nombre_ordis)
+# trainer = pl.Trainer(accelerator='auto', gpus=1, max_epochs=10, log_every_n_steps=20, devices=1, strategy="ddp", num_nodes=nombre_ordis, logger=logger)
 
 trainer.fit(model, dataloader, dataloader)
 
