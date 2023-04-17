@@ -32,19 +32,10 @@ Etapes pour faire tourner sur une machine de l'X un script python (installation 
 - télécharger lightning : python -m pip install lightning
 
 
+\\
 
+\\
 
-Pour télécharger les databases:
-GiantMIDI : https://github.com/bytedance/GiantMIDI-Piano/blob/master/disclaimer.md
-Télécharger le lien Google Drive
-WJD : https://jazzomat.hfm-weimar.de/download/download.html
-Le lien contient : 
-- un lien de téléchargement du fichier .db (où les mélodies sont formatées en séquences de string dans une colonne de la database)
-- un ZIP contenant tous les MIDI de la Database (plus facile à utiliser pour nous), en descendant
-
-
-//
-//
 
 Pour entrainer en DDP sur plusieurs ordis, il faut
 - Décommenter la ligne de définition du Trainer version ddp et commenter celle sans ddp puis mettre le bon nombre de devices.
