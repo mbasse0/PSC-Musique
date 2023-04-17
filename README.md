@@ -22,7 +22,7 @@ Pour utiliser les notebook de test du git : MyBinder.org Attention ! il associe 
 Pour produire un fichier requirements.txt, utiliser la bibliothèque pipreqs, cf https://stackoverflow.com/questions/31684375/automatically-create-requirements-txt
 
 
-Etapes pour faire tourner sur une machine de l'X un script python:
+Etapes pour faire tourner sur une machine de l'X un script python (installation rapide grace au .txt aproprié):
 - créer un virtual environment dans un dossier avec la commande : python3 -m venv Path
 - activer le venv : source Path/bin/activate
 - upgrade pip : python -m pip install --upgrade pip
@@ -30,6 +30,8 @@ Etapes pour faire tourner sur une machine de l'X un script python:
 - télécharger torchtext : python -m pip install torchtext==0.11.1
 - télécharger music21 : python -m pip install music21==6.7.1
 - télécharger lightning : python -m pip install lightning
+
+
 
 
 Pour télécharger les databases:
