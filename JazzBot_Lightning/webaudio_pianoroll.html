@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Existing styles and scripts -->
+  
+  <style>
+    /* Add your styles */
+    body {
+      font-family: 'Roboto', sans-serif;
+    }
+
+    button {
+      background-color: #0B3D91;
+      border: none;
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+      padding: 12px 24px;
+      border-radius: 4px;
+      transition-duration: 0.4s;
+    }
+
+    button:hover {
+      background-color: #1A74DB;
+      color: white;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+  </style>
+
+<style>
+  /* Add your styles */
+  .container {
+    display: flex;
+    justify-content: left;
+  }
+</style>
+  <script>
+    /* Add your scripts */
+  </script>
+
+</head>
+<body>
+  <!-- Existing content -->
+  <div class="container">
+    <webaudio-pianoroll id="piano-roll" width="1200" height="520" timebase="16" loop="1" xrange="64" yrange="22" markend="960" grid="16" wheelzoom="1" editmode="dragpoly"></webaudio-pianoroll>
+  </div>
+  <button id="play-stop-button" onclick="togglePlayStop()" disabled>Play</button>
+  <input type="file" id="midi-file-input" style="display:none;" accept=".mid" />
+  <button id="load-midi-button" onclick="loadMidiFile()">Load MIDI</button>
+  <button id="download-midi-button" onclick="downloadMidiFile()">Download MIDI</button>
+  <div id="music-score"></div>
+
+  <script src="https://cdn.jsdelivr.net/gh/g200kg/webaudio-pianoroll/webaudio-pianoroll.js"></script>
+  <script src="https://colxi.info/midi-parser-js/src/main.js"></script>
+  <script>
+    var module = { exports: {} };
+    var parseMidi;
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/midi-file@1.2.3/lib/midi-parser.js"></script>
+  <script>
+    parseMidi = module.exports;
+  </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.34/Tone.js"></script>
+<script type="module">
+    import MidiWriter from 'https://cdn.skypack.dev/midi-writer-js@2.1.4';
+
+  window.addEventListener("DOMContentLoaded", function() {
+    // timebase = 480;
+    let actx;
+    let BPM;
+
+    actx = new AudioContext();
+    let isPlaying = false;
+    let piano;
+    let isPianoLoaded = false;
+
+    // Load the piano samples
+    function loadPiano() {
+  const pianoSamples = {
+    A0: "A0.mp3",
+    C1: "C1.mp3",
+    "D#1": "Ds1.mp3",
+    "F#1": "Fs1.mp3",
+    A1: "A1.mp3",
+    C2: "C2.mp3",
+    "D#2": "Ds2.mp3",
+    "F#2": "Fs2.mp3",
+    A2: "A2.mp3",
+    C3: "C3.mp3",
+    "D#3": "Ds3.mp3",
+    "F#3": "Fs3.mp3",
+    A3: "A3.mp3",
+    C4: "C4.mp3",
+    "D#4": "Ds4.mp3",
+    "F#4": "Fs4.mp3",
+    A4: "A4.mp3",
+    C5: "C5.mp3",
+    "D#5": "Ds5.mp3",
+    "F#5": "Fs5.mp3",
+    A5: "A5.mp3",
+    C6: "C6.mp3",
+    "D#6": "Ds6.mp3",
+    "F#6": "Fs6.mp3",
+    A6: "A6.mp3",
+    C7: "C7.mp3",
+    "D#7": "Ds7.mp3",
+    "F#7": "Fs7.mp3",
+    A7: "A7.mp3",
+    C8: "C8.mp3",
+  };
+  const urls = {};
+  for (const key in pianoSamples) {
+    urls[key] = `https://tonejs.github.io/audio/salamander/${pianoSamples[key]}`;
+  }
+
+  piano = new Tone.Sampler({
+    urls: urls,
+    onload: () => {
+      isPianoLoaded = true;
+      document.getElementById("play-stop-button").disabled = false;
+    },
+    baseUrl: "",
+  }).toDestination();
+}
+
+function Callback(ev) {
+  const freq = Tone.Frequency(ev.n, "midi");
+  const note = freq.toNote();
+  const time = Tone.context.currentTime + ev.t;
+  const duration = (ev.g-ev.t)*2;
+  piano.triggerAttackRelease(note, duration, ev.t);
+
+
+}
+
+    loadPiano();
+      window.togglePlayStop = function(){
+        const playStopButton = document.getElementById("play-stop-button");
+
+        if (isPlaying) {
+          document.getElementById("piano-roll").stop();
+          playStopButton.textContent = "Play";
+          isPlaying = false;
+        } else {
+          actx.resume();
+          // dummy initial note for avoiding offset bugs
+          piano.triggerAttackRelease(Tone.Frequency(0, "midi"), 0.1, 0);
+
+          document.getElementById("piano-roll").play(actx, Callback);
+          playStopButton.textContent = "Stop";
+          isPlaying = true;
+        }
+      }
+
+      window.loadMidiFile = async function () {
+  const input = document.getElementById("midi-file-input");
+  input.click();
+
+  input.addEventListener("change", async function (event) {
+    const file = event.target.files[0];
+    const fileBuffer = new Uint8Array(await file.arrayBuffer());
+    const midiData = parseMidi(fileBuffer, { useByte9ForNoteOff: true });
+
+    // Clear the existing sequence
+    const pianoRoll = document.getElementById("piano-roll");
+    pianoRoll.sequence = [];
+    // Process the MIDI file
+    let cumulativeTime = 0;
+    let tempo = 500000; // 120 BPM in microseconds per beat
+    let division = midiData.header.ticksPerBeat;
+    const noteOnEvents = new Map();
+    BPM = 120
+
+    for (const track of midiData.tracks) {
+      for (const event of track) {
+        if (event.type === "setTempo") {
+          tempo = event.microsecondsPerBeat;
+        }
+        cumulativeTime += (8*tempo*event.deltaTime)/(1000000*division); // Calculate cumulative time
+        if (event.type == "noteOn") {
+          // noteOn event
+          noteOnEvents.set(event.noteNumber, {
+            t: cumulativeTime,
+            n: event.noteNumber,
+          });
+        } else if (event.type == "noteOff") {
+          // noteOff event
+          const noteOnEvent = noteOnEvents.get(event.noteNumber);
+          if (noteOnEvent) {
+            noteOnEvent.g = (cumulativeTime - noteOnEvent.t);
+            pianoRoll.sequence.push(noteOnEvent);
+            noteOnEvents.delete(event.noteNumber);
+          }
+        }
+      }
+    }
+
+    // Sort the sequence by time
+    pianoRoll.sequence.sort((a, b) => a.t - b.t);
+    // Refresh the piano roll
+    pianoRoll.redraw();
+  });
+};
+
+    });
+
+
+
+    window.loadMidiData = async function (midiDataArray) {
+    const midiData = parseMidi(midiDataArray, { useByte9ForNoteOff: true });
+
+    // Clear the existing sequence
+    const pianoRoll = document.getElementById("piano-roll");
+    pianoRoll.sequence = [];
+    // Process the MIDI file
+    let cumulativeTime = 0;
+    let tempo = 500000; // 120 BPM in microseconds per beat
+    let division = midiData.header.ticksPerBeat;
+    const noteOnEvents = new Map();
+    let BPM = 120;
+
+    for (const track of midiData.tracks) {
+      for (const event of track) {
+        if (event.type === "setTempo") {
+          tempo = event.microsecondsPerBeat;
+        }
+        cumulativeTime += (8 * tempo * event.deltaTime) / (1000000 * division); // Calculate cumulative time
+        if (event.type == "noteOn") {
+          // noteOn event
+          noteOnEvents.set(event.noteNumber, {
+            t: cumulativeTime,
+            n: event.noteNumber,
+          });
+        } else if (event.type == "noteOff") {
+          // noteOff event
+          const noteOnEvent = noteOnEvents.get(event.noteNumber);
+          if (noteOnEvent) {
+            noteOnEvent.g = cumulativeTime - noteOnEvent.t;
+            pianoRoll.sequence.push(noteOnEvent);
+            noteOnEvents.delete(event.noteNumber);
+          }
+        }
+      }
+    }
+
+    // Sort the sequence by time
+    pianoRoll.sequence.sort((a, b) => a.t - b.t);
+    // Refresh the piano roll
+    pianoRoll.redraw();
+  };
+
+  window.loadGeneratedMidiData = async function (midi_data) {
+    window.loadMidiData(midi_data);
+    }
+
+
+    function createMidiFile() {
+  const pianoRoll = document.getElementById("piano-roll");
+  const sequence = pianoRoll.sequence;
+
+  // Create a new MIDI track
+  const track = new MidiWriter.Track();
+
+  // Set the tempo
+  track.addEvent(new MidiWriter.TempoEvent({ bpm: BPM }));
+
+  // Iterate through the piano roll sequence and add notes to the track
+  for (const note of sequence) {
+    const notePitch = MidiWriter.Utils.getPitchFromNoteNumber(note.n);
+    const noteDuration = MidiWriter.Utils.getDurationFromTicks(note.g * timebase);
+    const noteStartTick = note.t * timebase;
+
+    const waitEvent = new MidiWriter.NoteEvent({
+      pitch: [notePitch],
+      duration: noteDuration,
+      startTick: noteStartTick,
+    });
+    track.addEvent(waitEvent);
+  }
+
+  // Create a new MIDI file with the track
+  const write = new MidiWriter.Writer(track);
+  return write.dataUri();
+}
+
+function getClosestValidDuration(duration) {
+  const validDurations = ['1', '2', '4', '8', '16', '32'];
+  let closestDuration = validDurations[0];
+  let minDifference = Math.abs(duration - parseInt(closestDuration));
+
+  validDurations.forEach((validDuration) => {
+    const difference = Math.abs(duration - parseInt(validDuration));
+    if (difference < minDifference) {
+      closestDuration = validDuration;
+      minDifference = difference;
+    }
+  });
+
+  return closestDuration;
+}
+
+window.downloadMidiFile = function () {
+  // 1. Extract the note information from the piano roll
+  const pianoRoll = document.getElementById("piano-roll");
+  const noteEvents = pianoRoll.sequence;
+
+  // 2. Create a MidiWriterJS track and populate it with the extracted note information
+  const track = new MidiWriter.Track();
+
+  track.addEvent(new MidiWriter.ProgramChangeEvent({ instrument: 1 }));
+  track.setTempo(120, 0); // Set the tempo (you can replace 120 with the actual tempo value)
+
+  noteEvents.forEach((noteEvent) => {
+    const noteNumber = noteEvent.n;
+    const duration = noteEvent.g;
+    const startTime = noteEvent.t;
+
+    // Convert the note number to a pitch string (e.g., "C4")
+    const pitch = Tone.Frequency(noteNumber, "midi").toNote();
+
+    // Compute the duration value for MidiWriter
+    const durationTicks = Math.round(2*duration * pianoRoll.timebase);
+
+    // Compute the start tick for the note event
+    const startTick = Math.round(2*startTime * pianoRoll.timebase);
+
+    const midiNoteEvent = new MidiWriter.NoteEvent({
+  pitch,
+  duration: `T${durationTicks}`, // Pass durationTicks as a string with 'T' prefix
+  startTick,
+});
+    track.addEvent(midiNoteEvent);
+  });
+
+
+  // 3. Use the MidiWriterJS Writer to generate a MIDI file
+  const writer = new MidiWriter.Writer(track);
+
+  // 4. Create a download link to let the user download the generated MIDI file
+  const downloadLink = document.createElement("a");
+  downloadLink.href = writer.dataUri();
+  downloadLink.download = "piano-roll.mid";
+  downloadLink.click();
+
+};
+
+
+  </script>
+</body>
+</html>
