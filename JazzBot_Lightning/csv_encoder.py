@@ -18,10 +18,10 @@ def pieceToInputTarget(p):
     '''
     return a couple of vectors (input, target) with input = SOS + piece - last_note; target = piece 
     '''
-    CV_p = [CV[x]for x in p]
+    CV_p = [custom_vocab[x] for x in p]
     input_p = [0]+CV_p[:-1]
     target_p = CV_p
-    return(input_p,target_p)
+    return input_p,target_p
 
 
 

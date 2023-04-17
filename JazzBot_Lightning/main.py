@@ -8,6 +8,7 @@ from data_decoder import *
 from dataset import *
 import pytorch_lightning as pl
 from config import *
+from csv_encoder import *
 
 
 ## ENCODING DATA
@@ -25,15 +26,18 @@ from config import *
 # # input_vect = [ [0] + [ custom_vocab[tok] for tok in morceau] for morceau in les_morceaux ]
 # # rep_vect = [ [ custom_vocab[tok] for tok in morceau] for morceau in les_morceaux_rep ]
 
-# # np.save('input_dataset2.npy', input_vect)
-# # np.save('rep_dataset2.npy', rep_vect)
+# # Weimar120
+# input_vect, rep_vect = tokensFileToVectInputTarget("WeimarFinal.csv",120)
 
-input_vect = np.load('input_weimar.npy')
-rep_vect = np.load('rep_weimar.npy')
+# np.save('input_weimar120.npy', input_vect)
+# np.save('rep_weimar120.npy', rep_vect)
+
+input_vect = np.load('input_weimar120.npy')
+rep_vect = np.load('rep_weimar120.npy')
 
 # ## CREATION DATASET ET DATALOADER
 
-batch_size = 32
+batch_size = 128
 dataloader = get_dataloader(input_vect, rep_vect, batch_size)
 
 ## ENTRAINEMENT
@@ -46,9 +50,9 @@ model = Transformer(
 logger = pl.loggers.TensorBoardLogger(save_dir='/users/eleves-b/2021/henri.duprieu/PSCmusique/PSC-Musique/JazzBot_Lightning')
 
 # Sans DDP :
-trainer = pl.Trainer(accelerator='auto', gpus=1, max_epochs=1, log_every_n_steps=20)
+# trainer = pl.Trainer(accelerator='auto', gpus=1, max_epochs=1, log_every_n_steps=20)
 # Pour DDP (pas fonctionnel encore):
-# trainer = pl.Trainer(accelerator='auto', gpus=1, max_epochs=10, log_every_n_steps=20, devices=1, strategy="ddp", num_nodes=nombre_ordis, logger=logger)
+trainer = pl.Trainer(accelerator='auto', gpus=1, max_epochs=2, log_every_n_steps=20, devices=1, strategy="ddp", num_nodes=nombre_ordis, logger=logger)
 
 trainer.fit(model, dataloader, dataloader)
 
