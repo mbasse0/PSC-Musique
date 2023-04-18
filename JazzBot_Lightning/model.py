@@ -104,7 +104,7 @@ class Transformer(pl.LightningModule):
         # X est ce qu'on donne à l'encoder. Un vecteur nul dans notre cas en l'absence d'informations contextuelles
         X = torch.tensor([0]*len(y_input))
         #y_input, y_expected = y_input.to(self.device), y_expected.to(self.device)
-        X, y_input, y_expected = X.to(self.device).clone().detach() , y_input.to(self.device).clone().detach(), y_expected.to(self.device).clone().detach()
+        X, y_input, y_expected = X.to(self.device) , y_input.to(self.device), y_expected.to(self.device)
 
         # Get mask to mask out the next words
         sequence_length = y_input.size(1)
@@ -122,28 +122,28 @@ class Transformer(pl.LightningModule):
         self.log('Training loss', loss)
         return loss
     
-    # def validation_step(self, batch, batchidx):
-    #     y_input, y_expected = batch
-    #     #y_input, y_expected sont tokenizés ne sont pas embeddés ce sont des batchs de séquences de nombres entre 0 et 1417
-    #     # appartiennent à [0,1417]^(120)^(batchsize)
+    def validation_step(self, batch, batchidx):
+        y_input, y_expected = batch
+        #y_input, y_expected sont tokenizés ne sont pas embeddés ce sont des batchs de séquences de nombres entre 0 et 1417
+        # appartiennent à [0,1417]^(120)^(batchsize)
 
-    #     # X est ce qu'on donne à l'encoder. Un vecteur nul dans notre cas en l'absence d'informations contextuelles
-    #     X = torch.tensor([0]*len(y_input))
-    #     #y_input, y_expected = y_input.to(self.device), y_expected.to(self.device)
-    #     X, y_input, y_expected = X.to(self.device).clone().detach() , y_input.to(self.device).clone().detach(), y_expected.to(self.device).clone().detach()
+        # X est ce qu'on donne à l'encoder. Un vecteur nul dans notre cas en l'absence d'informations contextuelles
+        X = torch.tensor([0]*len(y_input))
+        #y_input, y_expected = y_input.to(self.device), y_expected.to(self.device)
+        X, y_input, y_expected = X.to(self.device).clone().detach() , y_input.to(self.device).clone().detach(), y_expected.to(self.device).clone().detach()
 
-    #     # Get mask to mask out the next words
-    #     sequence_length = y_input.size(1)
-    #     tgt_mask = self.get_tgt_mask(sequence_length).to(self.device)
+        # Get mask to mask out the next words
+        sequence_length = y_input.size(1)
+        tgt_mask = self.get_tgt_mask(sequence_length).to(self.device)
 
-    #     # Standard training except we pass in y_input and tgt_mask
-    #     pred = self(X, y_input, tgt_mask)
-    #     #pred est embédé, chaque token est un vetceur one hot de {0,1}^1417
-    #     #donc pred appartient à {0,1}^1417^120^batchsize
+        # Standard training except we pass in y_input and tgt_mask
+        pred = self(X, y_input, tgt_mask)
+        #pred est embédé, chaque token est un vetceur one hot de {0,1}^1417
+        #donc pred appartient à {0,1}^1417^120^batchsize
 
-    #     # Permute pred to have batch size first again
-    #     pred = pred.permute(0, 2, 1)
-    #     lossF = nn.CrossEntropyLoss()
-    #     loss = lossF(pred, y_expected)
-    #     self.log('Validation loss', loss)
-    #     return loss
+        # Permute pred to have batch size first again
+        pred = pred.permute(0, 2, 1)
+        lossF = nn.CrossEntropyLoss()
+        loss = lossF(pred, y_expected)
+        self.log('Validation loss', loss)
+        return loss
