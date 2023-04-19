@@ -5,7 +5,7 @@ from positional_encoding import *
 from vocab4types import *
 import pytorch_lightning as pl
 
-class Transformer(pl.LightningModule):
+class Transformer4(pl.LightningModule):
     # Constructor
     def __init__(
         self, n_toks, d_toks, t_toks, v_toks, dim_model, num_heads, num_encoder_layers, num_decoder_layers, dropout_p
@@ -15,6 +15,11 @@ class Transformer(pl.LightningModule):
         # INFO
         self.model_type = "Transformer"
         self.dim_model = dim_model
+
+        self.n_toks = n_toks
+        self.d_toks = d_toks
+        self.t_toks = t_toks
+        self.v_toks = v_toks
 
         # LAYERS
         self.positional_encoder = PositionalEncoding(
@@ -45,6 +50,8 @@ class Transformer(pl.LightningModule):
         tgt = self.embedding(tgt) * math.sqrt(self.dim_model)
         src = self.positional_encoder(src)
         tgt = self.positional_encoder(tgt)
+
+        batch_size, seq_len, _ = tgt.shape
         
         transformer_out = self.transformer(src, tgt, tgt_mask=tgt_mask, src_key_padding_mask=src_pad_mask, tgt_key_padding_mask=tgt_pad_mask)
         # Out size = (batch_size, sequence length, dim_model) 
@@ -53,14 +60,18 @@ class Transformer(pl.LightningModule):
         for d in range(len(prev_token)):
             type_tok = itos_vocab[prev_token[d]][0]
             if type_tok =='n':
-                out = self.out1(transformer_out)
+                out = self.out2(transformer_out) # out size = (batch_size,sequance length, d_toks)
+                out = torch.cat((torch.zeros((batch_size,seq_len,self.n_toks)),out,torch.zeros((batch_size,seq_len,self.v_toks+self.t_toks))),dim=2)
             elif type_tok=='d':
-                out = self.out2(transformer_out)
-            elif type_tok=='t':
                 out = self.out3(transformer_out)
-            elif type_tok=='v':
+                out = torch.cat((torch.zeros((batch_size,seq_len,self.n_toks+self.d_toks)),out,torch.zeros((batch_size,seq_len,self.v_toks))),dim=2)
+            elif type_tok=='t':
                 out = self.out4(transformer_out)
-        #outSize définie par la outSize de self.out1 (num_token)
+                out = torch.cat((torch.zeros((batch_size,seq_len,self.n_toks+self.d_toks+self.t_toks)),out),dim=2)
+            elif type_tok=='v':
+                out = self.out1(transformer_out)
+                out = torch.cat((out,torch.zeros((batch_size,seq_len,self.v_toks+self.d_toks+self.t_toks))),dim=2)
+        # out size : (batch_size,sequance length, num_toks)
         return out
 
     # Genere un masque triangulaire  
