@@ -1,5 +1,5 @@
 from vocab import *
-from vocab4types import itos_NOTE, itos_DUR, itos_DIM, itos_VEL
+from vocab4types import *
 from model import *
 from model4out import *
 import numpy as np
@@ -12,20 +12,23 @@ import pytorch_lightning as pl
 from config import *
 import sys
 
-
 def main(argv):
    """
    arg1 : 0 : model , 1 : model4out
    arg2 : 0 : noDDP , 1 : DDP
-   arg3 : learning_rate (Optionnel)
-   arg4 : batch_size (Optionnel)
+   arg3 : nb_epochs
+   arg4 : learning_rate (Optionnel)
+   arg5 : batch_size (Optionnel)
    """
-   if len(argv) == 2:
+   if len(argv) == 3:
       learning_rate = 0.05
       batch_size = 32
+   else:
+      learning_rate = argv[3]
+      batch_size = argv[4]
 
-   learning_rate = argv[2]
-   batch_size = argv[3]
+   nb_epochs = argv[2]
+
 
    input_vect = np.load('input_weimar.npy')
    rep_vect = np.load('rep_weimar.npy')
@@ -61,7 +64,7 @@ def main(argv):
    if argv[1] == 1:
       trainer = pl.Trainer(accelerator='gpu', gpus=3, strategy='ddp', max_epochs=1, log_every_n_steps=20, benchmark=True, profiler="simple", logger=logger)
    else:
-      trainer = pl.Trainer(accelerator='gpu', gpus=1, max_epochs=1, log_every_n_steps=20, benchmark=True, profiler="simple", logger=logger)
+      trainer = pl.Trainer(accelerator='gpu', gpus=1, max_epochs=nb_epochs, log_every_n_steps=20, benchmark=True, profiler="simple", logger=logger)
 
    trainer.fit(model, train_dataloader, val_dataloader)
 
