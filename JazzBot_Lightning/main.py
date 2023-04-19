@@ -56,11 +56,7 @@ if __name__ == '__main__':
 
    logger = pl.loggers.TensorBoardLogger(save_dir='/users/eleves-b/2021/henri.duprieu/PSCmusique/PSC-Musique/JazzBot_Lightning')
 
-   # Sans DDP :
-   # trainer = pl.Trainer(accelerator='gpu',gpus=1, max_epochs=1, log_every_n_steps=20, benchmark=True, profiler="simple")
-   # Pour DDP (pas fonctionnel encore):
-   trainer = pl.Trainer(accelerator='auto', gpus=1, max_epochs=2, log_every_n_steps=20, devices=1, strategy="ddp", num_nodes=nombre_ordis, logger=logger)
-   
+   trainer = pl.Trainer(accelerator='gpu',gpus=3, max_epochs=1, log_every_n_steps=20, benchmark=True, profiler="simple", logger=logger)
    trainer.fit(model, train_dataloader, val_dataloader)
 
    # save the model weights to a file
