@@ -58,7 +58,7 @@ if __name__ == '__main__':
    num_tokens=len(custom_vocab), dim_model=256, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1
    )
 
-   #logger = pl.loggers.TensorBoardLogger(save_dir='/users/eleves-b/2021/henri.duprieu/PSCmusique/PSC-Musique/JazzBot_Lightning')
+   logger = pl.loggers.TensorBoardLogger(save_dir='.')
 
    trainer = pl.Trainer(accelerator='gpu', gpus=3, strategy='ddp', max_epochs=1, log_every_n_steps=20, benchmark=True, profiler="simple", logger=logger)
    trainer.fit(model, train_dataloader, val_dataloader)
