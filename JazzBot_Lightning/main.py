@@ -1,5 +1,5 @@
 from vocab import *
-from model4out import *
+from model import *
 import numpy as np
 from generate import *
 from data_encoder import *
@@ -49,14 +49,18 @@ if __name__ == '__main__':
 
    ## ENTRAINEMENT
 
-   model = Transformer4(
-      n_toks = len(itos_NOTE), d_toks = len(itos_DUR), t_toks = len(itos_TIM), v_toks = len(itos_VEL),
-      dim_model=256, num_heads=2, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1
+   #model = Transformer4(
+   #   n_toks = len(itos_NOTE), d_toks = len(itos_DUR), t_toks = len(itos_TIM), v_toks = len(itos_VEL),
+   #   dim_model=256, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1
+   #)
+
+   model = Transformer(
+   num_tokens=len(custom_vocab), dim_model=256, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1
    )
 
-   logger = pl.loggers.TensorBoardLogger(save_dir='/users/eleves-b/2021/henri.duprieu/PSCmusique/PSC-Musique/JazzBot_Lightning')
+   #logger = pl.loggers.TensorBoardLogger(save_dir='/users/eleves-b/2021/henri.duprieu/PSCmusique/PSC-Musique/JazzBot_Lightning')
 
-   trainer = pl.Trainer(accelerator='gpu',gpus=1, max_epochs=1, log_every_n_steps=20, benchmark=True, profiler="simple", logger=logger)
+   trainer = pl.Trainer(accelerator='gpu', gpus=3, strategy='ddp', max_epochs=1, log_every_n_steps=20, benchmark=True, profiler="simple", logger=logger)
    trainer.fit(model, train_dataloader, val_dataloader)
 
    # save the model weights to a file
