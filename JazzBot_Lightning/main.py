@@ -8,6 +8,7 @@ from data_decoder import *
 from dataset import *
 import pytorch_lightning as pl
 from config import *
+from csv_encoder import *
 
 if __name__ == '__main__':
    ## ENCODING DATA
