@@ -34,7 +34,7 @@ class rhythmLoss(nn.Module):
 
         max_indices = torch.argmax(softmax_output, dim=1)
 
-        batch_size, sequence_length, _ = target.shape
+        batch_size, sequence_length = target.shape
 
         loss = criterion(output.to(device), target.to(device)).to(device)
         batch_size = len(max_indices)
@@ -58,7 +58,7 @@ class rhythmLoss(nn.Module):
         pct_err = mask.float().mean().item()
         return loss + high_cost, pct_err
     
-    
+
 class harmonicLoss(nn.Module):
     """
     Custom loss function :
@@ -97,7 +97,7 @@ class harmonicLoss(nn.Module):
         criterion = nn.CrossEntropyLoss()
         softmax_output = F.softmax(output, dim=-1)
 
-        batch_size, sequence_length, _ = target.shape
+        batch_size, sequence_length = target.shape
 
         max_indices = torch.argmax(softmax_output, dim=1)
 
