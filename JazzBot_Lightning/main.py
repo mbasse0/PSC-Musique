@@ -60,7 +60,8 @@ if __name__ == '__main__':
    # trainer = pl.Trainer(accelerator='gpu',gpus=1, max_epochs=1, log_every_n_steps=20, benchmark=True, profiler="simple")
    # Pour DDP (pas fonctionnel encore):
    trainer = pl.Trainer(accelerator='auto', gpus=1, max_epochs=2, log_every_n_steps=20, devices=1, strategy="ddp", num_nodes=nombre_ordis, logger=logger)
-   trainer.fit(model, dataloader, dataloader)
+   
+   trainer.fit(model, train_dataloader, val_dataloader)
 
    # save the model weights to a file
    torch.save(model.state_dict(), 'test.pth')
