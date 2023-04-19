@@ -29,14 +29,14 @@ if __name__ == '__main__':
    # # np.save('input_dataset2.npy', input_vect)
    # # np.save('rep_dataset2.npy', rep_vect)
 
-   #input_vect = np.load('input_weimar.npy')
-   #rep_vect = np.load('rep_weimar.npy')
+   input_vect = np.load('input_weimar.npy')
+   rep_vect = np.load('rep_weimar.npy')
    
    # Weimar120
-   input_vect, rep_vect = tokensFileToVectInputTarget("WeimarFinal.csv",120)
+   #input_vect, rep_vect = tokensFileToVectInputTarget("WeimarFinal.csv",120)
 
-   np.save('input_weimar120.npy', input_vect)
-   np.save('rep_weimar120.npy', rep_vect)
+   #np.save('input_weimar120.npy', input_vect)
+   #np.save('rep_weimar120.npy', rep_vect)
 
 
    # input_vect = np.load('input_weimar120.npy')
