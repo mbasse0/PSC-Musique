@@ -33,7 +33,7 @@ if __name__ == '__main__':
 
    # ## CREATION DATASET ET DATALOADER
 
-   batch_size = 32
+   batch_size = 8
    dataloader = get_dataloader(input_vect, rep_vect, batch_size)
 
    ## ENTRAINEMENT
@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
    ## On définit un trainer pl
    # Sans DDP :
-   trainer = pl.Trainer(accelerator='auto', gpus=4, max_epochs=2, log_every_n_steps=20)
+   trainer = pl.Trainer(accelerator='auto', gpus=3, max_epochs=2, log_every_n_steps=20)
    # Pour DDP (pas fonctionnel encore):
    #trainer = pl.Trainer(accelerator='auto', gpus=1, max_epochs=10, log_every_n_steps=20, devices=1, strategy="ddp", num_nodes=nombre_ordis)
 
