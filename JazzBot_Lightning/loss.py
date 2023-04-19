@@ -1,7 +1,7 @@
 import torch
 from torch import Tensor
 import torch.nn as nn
-from vocab import *
+from vocab4types import *
 import numpy as np
 import torch.nn.functional as F
 
