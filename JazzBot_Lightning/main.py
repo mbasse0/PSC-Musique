@@ -61,7 +61,7 @@ if __name__ == '__main__':
    )
 
    logger = pl.loggers.TensorBoardLogger(save_dir='.')
-   trainer = pl.Trainer(accelerator='gpu', max_epochs=1, log_every_n_steps=20, benchmark=True, logger=logger)
+   trainer = pl.Trainer(accelerator='gpu', gpu=1, max_epochs=1, log_every_n_steps=20, benchmark=True, logger=logger)
    #trainer = pl.Trainer(accelerator='gpu', gpus=3, strategy='ddp', max_epochs=1, log_every_n_steps=20, benchmark=True, profiler="simple", logger=logger)
    trainer.fit(model, train_dataloader, val_dataloader)
 
