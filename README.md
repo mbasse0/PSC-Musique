@@ -29,7 +29,7 @@ Etapes pour faire tourner sur une machine de l'X un script python (installation 
 - télécharger les versions de torch : python -m pip install torch==1.10.1+cu113 torchvision==0.11.2+cu113 torchaudio==0.10.1 -f https://download.pytorch.org/whl/cu113/torch_stable.html
 - télécharger torchtext : python -m pip install torchtext==0.11.1
 - télécharger music21 : python -m pip install music21==6.7.1
-- télécharger lightning : python -m pip install lightning
+- télécharger lightning : python -m pip install pytorch-lightning
 
 
 \\
