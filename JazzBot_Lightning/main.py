@@ -1,4 +1,5 @@
 from vocab import *
+from vocab4types import itos_NOTE, itos_DUR, itos_DIM, itos_VEL
 from model import *
 from model4out import *
 import numpy as np
