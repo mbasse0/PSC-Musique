@@ -28,14 +28,15 @@ if __name__ == '__main__':
    # # np.save('input_dataset2.npy', input_vect)
    # # np.save('rep_dataset2.npy', rep_vect)
 
-   input_vect = np.load('input_weimar.npy')
-   rep_vect = np.load('rep_weimar.npy')
+   #input_vect = np.load('input_weimar.npy')
+   #rep_vect = np.load('rep_weimar.npy')
    
-   # # Weimar120
-   # input_vect, rep_vect = tokensFileToVectInputTarget("WeimarFinal.csv",120)
+   # Weimar120
+   input_vect, rep_vect = tokensFileToVectInputTarget("WeimarFinal.csv",120)
 
-   # np.save('input_weimar120.npy', input_vect)
-   # np.save('rep_weimar120.npy', rep_vect)
+   np.save('input_weimar120.npy', input_vect)
+   np.save('rep_weimar120.npy', rep_vect)
+
 
    # input_vect = np.load('input_weimar120.npy')
    # rep_vect = np.load('rep_weimar120.npy')
@@ -59,8 +60,8 @@ if __name__ == '__main__':
    )
 
    logger = pl.loggers.TensorBoardLogger(save_dir='.')
-
-   trainer = pl.Trainer(accelerator='gpu', gpus=3, strategy='ddp', max_epochs=1, log_every_n_steps=20, benchmark=True, profiler="simple", logger=logger)
+   trainer = pl.Trainer(accelerator='gpu', max_epochs=1, log_every_n_steps=20, benchmark=True, logger=logger)
+   #trainer = pl.Trainer(accelerator='gpu', gpus=3, strategy='ddp', max_epochs=1, log_every_n_steps=20, benchmark=True, profiler="simple", logger=logger)
    trainer.fit(model, train_dataloader, val_dataloader)
 
    # save the model weights to a file
