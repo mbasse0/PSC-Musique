@@ -15,12 +15,14 @@ class Transformer(pl.LightningModule):
         num_encoder_layers,
         num_decoder_layers,
         dropout_p,
+        learning_rate
     ):
         super().__init__()
 
         # INFO
         self.model_type = "Transformer"
         self.dim_model = dim_model
+        self.lr = learning_rate
 
         # LAYERS
         self.positional_encoder = PositionalEncoding(
@@ -93,7 +95,7 @@ class Transformer(pl.LightningModule):
 
     
     def configure_optimizers(self):
-        optimizer = torch.optim.SGD(self.parameters(), lr=0.05)
+        optimizer = torch.optim.SGD(self.parameters(), lr=self.lr)
         return optimizer
     
     def training_step(self, batch):

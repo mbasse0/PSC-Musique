@@ -9,7 +9,7 @@ from loss import *
 class Transformer4(pl.LightningModule):
     # Constructor
     def __init__(
-        self, n_toks, d_toks, t_toks, v_toks, dim_model, num_heads, num_encoder_layers, num_decoder_layers, dropout_p
+        self, n_toks, d_toks, t_toks, v_toks, dim_model, num_heads, num_encoder_layers, num_decoder_layers, dropout_p, learning_rate
     ):
         super().__init__()
 
@@ -21,6 +21,8 @@ class Transformer4(pl.LightningModule):
         self.d_toks = d_toks
         self.t_toks = t_toks
         self.v_toks = v_toks
+
+        self.lr = learning_rate
 
         # LAYERS
         self.positional_encoder = PositionalEncoding(
@@ -100,7 +102,7 @@ class Transformer4(pl.LightningModule):
 
     
     def configure_optimizers(self):
-        optimizer = torch.optim.SGD(self.parameters(), lr=0.05)
+        optimizer = torch.optim.SGD(self.parameters(), lr=self.lr)
         return optimizer
     
     def training_step(self, batch):
