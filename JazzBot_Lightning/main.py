@@ -24,10 +24,10 @@ def main(argv):
       learning_rate = 0.05
       batch_size = 32
    else:
-      learning_rate = argv[3]
-      batch_size = argv[4]
+      learning_rate = float(argv[3])
+      batch_size = float(argv[4])
 
-   nb_epochs = argv[2]
+   nb_epochs = float(argv[2])
 
 
    input_vect = np.load('input_weimar.npy')
