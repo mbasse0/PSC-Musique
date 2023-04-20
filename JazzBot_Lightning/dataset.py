@@ -31,7 +31,7 @@ def get_two_dataloaders(input_vect, rep_vect, batch_size):
     
     # use 20% of training data for validation
     n = len(input_vect)
-    train_set_size = int(n * 0.8)
+    train_set_size = int(n * 0.9)
     valid_set_size = n - train_set_size
     seed = torch.Generator().manual_seed(42)
     train_set, valid_set = data.random_split(dataset, [train_set_size, valid_set_size], generator=seed)
