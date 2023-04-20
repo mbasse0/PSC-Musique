@@ -30,8 +30,8 @@ def main(argv):
    nb_epochs = float(argv[2])
 
 
-   input_vect = np.load('input_weimar.npy')
-   rep_vect = np.load('rep_weimar.npy')
+   input_vect = np.load('input_weimar120.npy')
+   rep_vect = np.load('rep_weimar120.npy')
    
    # # Weimar120
    # input_vect, rep_vect = tokensFileToVectInputTarget("WeimarFinal.csv",120)
