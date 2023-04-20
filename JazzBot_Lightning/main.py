@@ -94,4 +94,4 @@ def main(argv):
    # # tokens_to_midi([itos_vocab[el]for el in input_vect[10]], "midi_dataset_GM.mid", 120)
 
 if __name__=="__main__":
-   main(sys.argv)
+   main(sys.argv[1:])
