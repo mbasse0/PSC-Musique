@@ -50,7 +50,7 @@ def main(argv):
 
    ## ENTRAINEMENT
 
-   if argv[0] == 1:
+   if int(argv[0]) == 1:
       model = Transformer4(
          n_toks = len(itos_NOTE), d_toks = len(itos_DUR), t_toks = len(itos_TIM), v_toks = len(itos_VEL), dim_model=256, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1, learning_rate = learning_rate
       )
@@ -61,8 +61,8 @@ def main(argv):
 
    logger = pl.loggers.TensorBoardLogger(save_dir='.')
 
-   if argv[1] == 1:
-      trainer = pl.Trainer(accelerator='gpu', gpus=3, strategy='ddp', max_epochs=1, log_every_n_steps=20, benchmark=True, profiler="simple", logger=logger)
+   if int(argv[1]) == 1:
+      trainer = pl.Trainer(accelerator='gpu', gpus=3, strategy='ddp', max_epochs=nb_epochs, log_every_n_steps=20, benchmark=True, profiler="simple", logger=logger)
    else:
       trainer = pl.Trainer(accelerator='gpu', gpus=1, max_epochs=nb_epochs, log_every_n_steps=20, benchmark=True, profiler="simple", logger=logger)
 
