@@ -69,7 +69,7 @@ def main(argv):
    trainer.fit(model, train_dataloader, val_dataloader)
 
    # save the model weights to a file
-   torch.save(model.state_dict(), 'test.pth')
+   torch.save(model.state_dict(), 'model_5epoch_nondeter_256_8_1_6_0.1_0.05.pth')
 
 
    # ##GENERER SEQ
