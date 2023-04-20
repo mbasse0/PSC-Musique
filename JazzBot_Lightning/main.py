@@ -20,6 +20,7 @@ def main(argv):
    arg4 : learning_rate (Optionnel)
    arg5 : batch_size (Optionnel)
    """
+   print(argv)
    if len(argv) == 3:
       learning_rate = 0.05
       batch_size = 32
