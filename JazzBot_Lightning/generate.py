@@ -11,17 +11,19 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 
 
 
-def generate_sequence(model, start_tokens, max_length=100, temperature=1.0):
+def generate_sequence(model, start_tokens, max_length=100, temperature=1.0, progress_callback=None):
     # start_tokens doit être une liste d'indices
     model.eval()
-    model = model.to(device)
+
     # L'input donné à l'encoder (vecteur nul dans notre cas, comme pendant l'entraînement)
     taille_bloc = 120
     X = torch.tensor([0]*taille_bloc).unsqueeze(0).to(device)
-
+    print("AAA", max_length - len(start_tokens))
+    N = max_length - len(start_tokens)
     with torch.no_grad():
         les_tokens = start_tokens
-        for _ in tqdm(range(max_length - len(start_tokens))):
+        for i in (range(max_length - len(start_tokens))):
+            print(i)
             # Unsqueeze(0) rajoute une dimension qui correspond au batch_size (qui vaut 1 dans ce cas) pour coller aux shape attendues par le modèle
             input_tokens = torch.tensor(start_tokens).unsqueeze(0).to(device)
             
@@ -31,6 +33,10 @@ def generate_sequence(model, start_tokens, max_length=100, temperature=1.0):
             # Softmax transforme les logits en probabilités, multinomial fait une séleciton pondérée par ces probabilités d''un seul indice (num_samples=1), to_list passe de tensor à array
             next_token = torch.multinomial(F.softmax(logits, dim=-1), num_samples=1).squeeze().tolist()
             les_tokens.append(next_token)
+            print(i/N)
+            if progress_callback:
+            
+                progress_callback(i / N)
 
     return les_tokens
 
