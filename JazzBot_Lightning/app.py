@@ -20,7 +20,7 @@ st.title("JazzBot")
 st.text("Use JazzBot to create a jazz solo")
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 state_dict = torch.load("./model4out.pth",map_location=torch.device(device))
-model = Transformer(num_tokens=len(custom_vocab), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=4, dropout_p=0.1).to(device)
+model = Transformer(num_tokens=len(custom_vocab), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=4, dropout_p=0.1, learning_rate=0.05).to(device)
 model.load_state_dict(state_dict)
 model.eval()
 
