@@ -80,7 +80,7 @@ class Transformer4(pl.LightningModule):
     # Genere un masque triangulaire  
     def get_tgt_mask(self, size) -> torch.tensor:
         # Generates a squeare matrix where the each row allows one word more to be seen
-        mask = torch.tril(torch.ones(size, size) == 1) # Lower triangular matrix
+        mask = torch.tril(torch.ones((size, size),device=self.device) == 1) # Lower triangular matrix
         mask = mask.float()
         mask = mask.masked_fill(mask == 0, float('-inf')) # Convert zeros to -inf
         mask = mask.masked_fill(mask == 1, float(0.0)) # Convert ones to 0
@@ -117,7 +117,7 @@ class Transformer4(pl.LightningModule):
 
         # Get mask to mask out the next words
         sequence_length = y_input.size(1)
-        tgt_mask = self.get_tgt_mask(sequence_length).to(self.device)
+        tgt_mask = self.get_tgt_mask(sequence_length)
 
         # Standard training except we pass in y_input and tgt_mask
         pred = self(X, y_input, tgt_mask)
