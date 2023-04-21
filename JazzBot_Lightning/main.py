@@ -30,8 +30,8 @@ def main(argv):
    nb_epochs = float(argv[2])
 
 
-   input_vect = np.load('input_weimar.npy')
-   rep_vect = np.load('rep_weimar.npy')
+   input_vect = np.load('input_weimar120.npy')
+   rep_vect = np.load('rep_weimar120.npy')
    
    # # Weimar120
    # input_vect, rep_vect = tokensFileToVectInputTarget("WeimarFinal.csv",120)
@@ -69,7 +69,7 @@ def main(argv):
    trainer.fit(model, train_dataloader, val_dataloader)
 
    # save the model weights to a file
-   torch.save(model.state_dict(), 'model_5epoch_nondeter_256_8_1_6_0.1_0.05.pth')
+   torch.save(model.state_dict(), 'model_5epoch_deter_256_8_1_6_0.1_0.05.pth')
 
 
    # ##GENERER SEQ
