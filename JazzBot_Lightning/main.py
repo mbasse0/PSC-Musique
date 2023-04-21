@@ -11,6 +11,7 @@ from dataset import *
 import pytorch_lightning as pl
 from config import *
 import sys
+from csv_encoder import *
 
 def main(argv):
    """
