@@ -52,11 +52,11 @@ def main(argv):
 
    if int(argv[0]) == 1:
       model = Transformer4(
-         n_toks = len(itos_NOTE), d_toks = len(itos_DUR), t_toks = len(itos_TIM), v_toks = len(itos_VEL), dim_model=256, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1, learning_rate = learning_rate
+         n_toks = len(itos_NOTE), d_toks = len(itos_DUR), t_toks = len(itos_TIM), v_toks = len(itos_VEL), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1, learning_rate = learning_rate
       )
    else:
       model = Transformer(
-         num_tokens=len(custom_vocab), dim_model=256, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1, learning_rate=learning_rate
+         num_tokens=len(custom_vocab), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1, learning_rate=learning_rate
       )
 
    logger = pl.loggers.TensorBoardLogger(save_dir='.')
@@ -69,7 +69,7 @@ def main(argv):
    trainer.fit(model, train_dataloader, val_dataloader)
 
    # save the model weights to a file
-   torch.save(model.state_dict(), 'model_5epoch_deter_256_8_1_6_0.1_0.05.pth')
+   torch.save(model.state_dict(), 'model_5epoch_nondeter_512_8_1_6_0.1_0.05.pth')
 
 
    # ##GENERER SEQ
