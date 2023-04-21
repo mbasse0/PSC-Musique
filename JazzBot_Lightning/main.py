@@ -33,21 +33,21 @@ def main(argv):
 
 
 
-   #input_vect = np.load('input_weimar120.npy')
-   #rep_vect = np.load('rep_weimar120.npy')
+   input_vect = np.load('input_weimar.npy')
+   rep_vect = np.load('rep_weimar.npy')
    
    # # Weimar120
-   input_vect, rep_vect = tokensFileToVectInputTarget("WeimarFinal.csv",120)
+   # input_vect, rep_vect = tokensFileToVectInputTarget("WeimarFinal.csv",120)
 
    #np.save('input_weimar120.npy', input_vect)
    #np.save('rep_weimar120.npy', rep_vect)
 
-   #input_vect = np.load('input_weimar120.npy')
-   #rep_vect = np.load('rep_weimar120.npy')
+   # input_vect = np.load('input_weimar120.npy')
+   # rep_vect = np.load('rep_weimar120.npy')
 
    # ## CREATION DATASET ET DATALOADER
 
-   dataloader = get_dataloader(input_vect, rep_vect, batch_size)
+   # dataloader = get_dataloader(input_vect, rep_vect, batch_size)
    train_dataloader, val_dataloader = get_two_dataloaders(input_vect, rep_vect, batch_size)
 
 

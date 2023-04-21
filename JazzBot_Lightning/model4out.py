@@ -80,7 +80,7 @@ class Transformer4(pl.LightningModule):
     # Genere un masque triangulaire  
     def get_tgt_mask(self, size) -> torch.tensor:
         # Generates a squeare matrix where the each row allows one word more to be seen
-        mask = torch.tril(torch.ones((size, size),device=self.device) == 1) # Lower triangular matrix
+        mask = torch.tril(torch.ones((size, size), device=self.device) == 1) # Lower triangular matrix
         mask = mask.float()
         mask = mask.masked_fill(mask == 0, float('-inf')) # Convert zeros to -inf
         mask = mask.masked_fill(mask == 1, float(0.0)) # Convert ones to 0
@@ -111,9 +111,8 @@ class Transformer4(pl.LightningModule):
         # appartiennent à [0,1417]^(120)^(batchsize)
 
         # X est ce qu'on donne à l'encoder. Un vecteur nul dans notre cas en l'absence d'informations contextuelles
-        X = torch.tensor([0]*len(y_input))
-        #y_input, y_expected = y_input.to(self.device), y_expected.to(self.device)
-        X, y_input, y_expected = X.to(self.device).clone().detach() , y_input.to(self.device).clone().detach(), y_expected.to(self.device).clone().detach()
+        X = torch.tensor(([0]*len(y_input)), device=self.device)
+        X, y_input, y_expected = X.detach() , y_input.to(self.device).detach(), y_expected.to(self.device).detach()
 
         # Get mask to mask out the next words
         sequence_length = y_input.size(1)
@@ -138,9 +137,8 @@ class Transformer4(pl.LightningModule):
         # appartiennent à [0,1417]^(120)^(batchsize)
 
         # X est ce qu'on donne à l'encoder. Un vecteur nul dans notre cas en l'absence d'informations contextuelles
-        X = torch.tensor([0]*len(y_input))
-        #y_input, y_expected = y_input.to(self.device), y_expected.to(self.device)
-        X, y_input, y_expected = X.to(self.device).clone().detach() , y_input.to(self.device).clone().detach(), y_expected.to(self.device).clone().detach()
+        X = torch.tensor(([0]*len(y_input)), device=self.device)
+        X, y_input, y_expected = X.detach(), y_input.to(self.device).detach(), y_expected.to(self.device).detach()
 
         # Get mask to mask out the next words
         sequence_length = y_input.size(1)
