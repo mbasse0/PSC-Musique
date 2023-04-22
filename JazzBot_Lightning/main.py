@@ -1,10 +1,8 @@
 from vocab import *
-from vocab4types import *
 from model import *
 from model4out import *
 import numpy as np
 from generate import *
-from data_encoder import *
 from data_decoder import *
 ##from train import *
 from dataset import *
@@ -54,7 +52,7 @@ def main(argv):
       input_vect, rep_vect = tokensFileToVectInputTarget_4out("WeimarFinal.csv",120)
       train_dataloader, val_dataloader = get_two_dataloaders(input_vect, rep_vect, batch_size)
       model = Transformer4(
-         n_toks = len(itos_NOTE), d_toks = len(itos_DUR), t_toks = len(itos_TIM), v_toks = len(itos_VEL), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1, learning_rate = learning_rate
+         n_toks = NOTE_SIZE, d_toks = DUR_SIZE, t_toks = TIM_SIZE, v_toks = VEL_SIZE, dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1, learning_rate = learning_rate
       )
    else:
       input_vect = np.load('input_weimar.npy')

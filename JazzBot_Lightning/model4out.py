@@ -2,14 +2,14 @@ from torch import nn, optim
 import math
 from positional_encoding import *
 #from config import *
-from vocab4types import *
+from vocab import *
 import pytorch_lightning as pl
 from loss import *
 
 class Transformer4(pl.LightningModule):
     # Constructor
     def __init__(
-        self, n_toks, d_toks, t_toks, v_toks, dim_model, num_heads, num_encoder_layers, num_decoder_layers, dropout_p, learning_rate
+        self, dim_model, num_heads, num_encoder_layers, num_decoder_layers, dropout_p, learning_rate
     ):
         super().__init__()
 
@@ -17,10 +17,10 @@ class Transformer4(pl.LightningModule):
         self.model_type = "Transformer"
         self.dim_model = dim_model
 
-        self.n_toks = n_toks
-        self.d_toks = d_toks
-        self.t_toks = t_toks
-        self.v_toks = v_toks
+        self.n_toks = NOTE_SIZE
+        self.d_toks = DUR_SIZE
+        self.t_toks = TIM_SIZE
+        self.v_toks = VEL_SIZE
 
         self.lr = learning_rate
 
@@ -28,7 +28,7 @@ class Transformer4(pl.LightningModule):
         self.positional_encoder = PositionalEncoding(
             dim_model=dim_model, dropout_p=dropout_p, max_len=5000
         )
-        num_tokens = n_toks + d_toks + t_toks + v_toks
+        num_tokens = len(custom_vocab)
         self.embedding = nn.Embedding(num_tokens, dim_model)
         self.transformer = nn.Transformer(
             d_model=dim_model,
@@ -61,7 +61,7 @@ class Transformer4(pl.LightningModule):
 
         # Pour toutes les valeurs du batch size, on passe le résultat du transformer (de la taille de l'embeddding) dans la couche out adaptée afin d'obtenir un output final de la taille du vocab
         for d in range(len(prev_token)):
-            type_tok = itos_vocab_4[prev_token[d]][0]
+            type_tok = itos_vocab[prev_token[d]][0]
             if type_tok =='n':      
                 out = self.out2(transformer_out) # out size = (batch_size,sequance length, d_toks)
                 out = torch.cat((torch.zeros((batch_size,seq_len,self.n_toks), device=self.device),out,torch.zeros((batch_size,seq_len,self.v_toks+self.t_toks), device=self.device)),dim=2).to(self.device)
@@ -71,7 +71,7 @@ class Transformer4(pl.LightningModule):
             elif type_tok=='t':
                 out = self.out4(transformer_out)
                 out = torch.cat((torch.zeros((batch_size,seq_len,self.n_toks+self.d_toks+self.t_toks), device=self.device),out),dim=2).to(self.device)
-            elif type_tok=='v' or type_tok=='s':   # prend en compte le token SOS
+            elif type_tok=='v':   # prend en compte le token BOS
                 out = self.out1(transformer_out)
                 out = torch.cat((out,torch.zeros((batch_size,seq_len,self.v_toks+self.d_toks+self.t_toks), device=self.device)),dim=2).to(self.device)
         # out size : (batch_size,sequance length, num_toks)

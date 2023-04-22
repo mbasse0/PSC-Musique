@@ -15,9 +15,8 @@ DUR_TOKS = [f'd{i}' for i in range(DUR_SIZE)]
 TIM_TOKS = [f't{i}' for i in range(TIM_SIZE)]
 VEL_TOKS = [f'v{i}' for i in range(VEL_SIZE)]
 
-BOS_TOK = "BOS"
 # Le token dummy sert seulement à initialiser les mots du vocab à partir de l'index 1, conformément aux prérequis de la fonction vocab()
-VOCAB = ["dummy"] + [BOS_TOK] + NOTE_TOKS + DUR_TOKS + TIM_TOKS + VEL_TOKS 
+VOCAB = ["dummy"] + NOTE_TOKS + DUR_TOKS + TIM_TOKS + VEL_TOKS 
 
 DICT = [(element, index) for index, element in enumerate(VOCAB)]
 

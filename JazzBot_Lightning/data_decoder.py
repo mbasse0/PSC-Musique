@@ -1,7 +1,5 @@
 import music21
 from music21 import * 
-from vocab4types import *
-
 
 
 def tokens_to_stream(token_array):
