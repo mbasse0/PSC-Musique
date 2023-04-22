@@ -3,95 +3,72 @@ from tqdm import tqdm
 from music21 import *
 import os
 
+#############################################################################################################################################
+
+def noteToToken(n,last_time):
+    '''
+    # parameters : note, last_time
+    '''
+    note_pitch = n.pitch.midi
+    note_duration = round(n.duration.quarterLength*12)
+    note_timeshift = round(n.offset*12 - last_time)
+    note_velocity = n.volume.velocity
+    return [NOTE_TOKS[note_pitch],
+            DUR_TOKS[note_duration],
+            TIM_TOKS[note_timeshift],
+            VEL_TOKS[note_velocity]]
+
+def chordToToken(chord, last_time):
+    tok = []
+    note_offset = round(n.offset*12 - last_time)
+    for n in chord:
+        note_pitch = n.pitch.midi
+        note_duration = round(n.duration.quarterLength*12)
+        note_velocity = n.volume.velocity
+        tok+=[NOTE_TOKS[note_pitch],
+                DUR_TOKS[note_duration],
+                TIM_TOKS[note_offset],
+                VEL_TOKS[note_velocity]]
+    return tok
+
+
+#############################################################################################################################################
 def midiToTokens(filename):
-
-
-    # Load the MIDI file
+    '''
+    parameter : folder_path,f = name of the midi file
+    read a midi file and extract the notes in several arrays of tokens (cut where issues occur), return only the first array
+    '''
+    tokens = []
     midi_file = midi.MidiFile()
-
-    les_tokens = []
     midi_file.open(filename)
     midi_file.read()
     midi_file.close()
-    # Create a stream from the MIDI file
     stream = midi.translate.midiFileToStream(midi_file)
-
-    # Iterate over the notes in the stream and extract the note information
     last_time = 0
-
-    for note in stream.flat.notes:
+    tokens = []
+    tok = []
+    start = True
+    for note in  stream.recurse().notes:
+        if start and note.isRest:
+            last_time = note.duration.quarterLength*12
+            start = False
         if note.isNote:
-            note_pitch = note.pitch.midi
-            # A terme il faudra arrondir plutot que de prendre la partie entiere
-            note_duration = round(note.duration.quarterLength*12)
-            note_offset = round(note.offset*12 - last_time)
-            last_time = note.offset*12
-            note_velocity = note.volume.velocity
-            les_tokens.append(NOTE_TOKS[note_pitch])
-            les_tokens.append(DUR_TOKS[note_duration])
-            if note_offset < NOTE_SIZE:
-                les_tokens.append(TIM_TOKS[note_offset])
-            les_tokens.append(VEL_TOKS[note_velocity])
+            time_rest = note.offset*12-last_time
+            # print(note, time_rest)
+            if  time_rest < 0 or time_rest >= 192 or note.duration.quarterLength*12>=96:
+                if(len(tok)>=120):
+                    tokens.append(tok)
+                    tok = []
+            else :
+                if note.isNote:
+                    tok+=noteToToken(note,last_time)
 
-        if note.isChord:
+                if note.isChord:
+                    tok+=chordToToken(note,last_time)
+            last_time = note.offset*12   
+    if (len(tok)>=120):
+        tokens.append(tok)
 
-            for note2 in note:
-                note_pitch = note2.pitch.midi
-                note_duration = int(note.duration.quarterLength*4)
-                note_offset = int(note.offset*12 - last_time)
-                last_time = note.offset*12
-                note_velocity = note2.volume.velocity
-                les_tokens.append(NOTE_TOKS[note_pitch])
-                les_tokens.append(DUR_TOKS[note_duration])
-                if note_offset < NOTE_SIZE:
-                    les_tokens.append(TIM_TOKS[note_offset])
-                les_tokens.append(VEL_TOKS[note_velocity])
-    return les_tokens
+    return tokens[0]
 
-
-
-def midifolderToTokens(folder_path):
-    les_tokens = []
-
-    # Get all the file names in the folder
-    file_names = os.listdir(folder_path)
-    for f in tqdm(file_names):
-        print(f)
-        midi_file = midi.MidiFile()
-        midi_file.open(folder_path + "/" +f)
-        midi_file.read()
-        midi_file.close()
-        # Create a stream from the MIDI file
-        stream = midi.translate.midiFileToStream(midi_file)
-
-        # Iterate over the notes in the stream and extract the note information
-        last_time = 0
-
-        for note in stream.flat.notes:
-            if note.isNote:
-                note_pitch = note.pitch.midi
-                # A terme il faudra arrondir plutot que de prendre la partie entiere
-                note_duration = int(note.duration.quarterLength*12)
-                note_offset = int(note.offset*12 - last_time)
-                last_time = note.offset*12
-                note_velocity = note.volume.velocity
-                les_tokens.append(NOTE_TOKS[note_pitch])
-                les_tokens.append(DUR_TOKS[note_duration])
-                if note_offset < NOTE_SIZE:
-                    les_tokens.append(TIM_TOKS[note_offset])
-                les_tokens.append(VEL_TOKS[note_velocity])
-
-            if note.isChord:
-
-                for note2 in note:
-                    note_pitch = note2.pitch.midi
-                    note_duration = int(note.duration.quarterLength*12)
-                    note_offset = int(note.offset*12 - last_time)
-                    last_time = note.offset*12
-                    note_velocity = note2.volume.velocity
-                    les_tokens.append(NOTE_TOKS[note_pitch])
-                    les_tokens.append(DUR_TOKS[note_duration])
-                    if note_offset < NOTE_SIZE:
-                        les_tokens.append(TIM_TOKS[note_offset])
-                    les_tokens.append(VEL_TOKS[note_velocity])
-    return les_tokens
+##########################################################################################################################################################
