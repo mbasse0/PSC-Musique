@@ -30,11 +30,8 @@ def main(argv):
 
    nb_epochs = float(argv[2])
 
-
-
-
-   input_vect = np.load('input_weimar.npy')
-   rep_vect = np.load('rep_weimar.npy')
+   # input_vect = np.load('input_weimar.npy')
+   # rep_vect = np.load('rep_weimar.npy')
    
    # # Weimar120
    # input_vect, rep_vect = tokensFileToVectInputTarget("WeimarFinal.csv",120)
@@ -48,16 +45,21 @@ def main(argv):
    # ## CREATION DATASET ET DATALOADER
 
    # dataloader = get_dataloader(input_vect, rep_vect, batch_size)
-   train_dataloader, val_dataloader = get_two_dataloaders(input_vect, rep_vect, batch_size)
+   # train_dataloader, val_dataloader = get_two_dataloaders(input_vect, rep_vect, batch_size)
 
 
    ## ENTRAINEMENT
 
    if int(argv[0]) == 1:
+      input_vect, rep_vect = tokensFileToVectInputTarget_4out("WeimarFinal.csv",120)
+      train_dataloader, val_dataloader = get_two_dataloaders(input_vect, rep_vect, batch_size)
       model = Transformer4(
          n_toks = len(itos_NOTE), d_toks = len(itos_DUR), t_toks = len(itos_TIM), v_toks = len(itos_VEL), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1, learning_rate = learning_rate
       )
    else:
+      input_vect = np.load('input_weimar.npy')
+      rep_vect = np.load('rep_weimar.npy')
+      train_dataloader, val_dataloader = get_two_dataloaders(input_vect, rep_vect, batch_size)
       model = Transformer(
          num_tokens=len(custom_vocab), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1, learning_rate=learning_rate
       )
@@ -72,7 +74,7 @@ def main(argv):
    trainer.fit(model, train_dataloader, val_dataloader)
 
    # save the model weights to a file
-   torch.save(model.state_dict(), 'model_5epoch_nondeter_512_8_1_6_0.1_0.05.pth')
+   torch.save(model.state_dict(), 'model_1epoch_deter_512_8_1_6_0.1_0.05.pth')
 
 
    # ##GENERER SEQ
