@@ -23,9 +23,9 @@ def midiToTokens(filename):
         if note.isNote:
             note_pitch = note.pitch.midi
             # A terme il faudra arrondir plutot que de prendre la partie entiere
-            note_duration = int(note.duration.quarterLength*4)
-            note_offset = int(note.offset*4 - last_time)
-            last_time = note.offset*4
+            note_duration = round(note.duration.quarterLength*12)
+            note_offset = round(note.offset*12 - last_time)
+            last_time = note.offset*12
             note_velocity = note.volume.velocity
             les_tokens.append(NOTE_TOKS[note_pitch])
             les_tokens.append(DUR_TOKS[note_duration])
@@ -38,8 +38,8 @@ def midiToTokens(filename):
             for note2 in note:
                 note_pitch = note2.pitch.midi
                 note_duration = int(note.duration.quarterLength*4)
-                note_offset = int(note.offset*4 - last_time)
-                last_time = note.offset*4
+                note_offset = int(note.offset*12 - last_time)
+                last_time = note.offset*12
                 note_velocity = note2.volume.velocity
                 les_tokens.append(NOTE_TOKS[note_pitch])
                 les_tokens.append(DUR_TOKS[note_duration])
@@ -71,9 +71,9 @@ def midifolderToTokens(folder_path):
             if note.isNote:
                 note_pitch = note.pitch.midi
                 # A terme il faudra arrondir plutot que de prendre la partie entiere
-                note_duration = int(note.duration.quarterLength*4)
-                note_offset = int(note.offset*4 - last_time)
-                last_time = note.offset*4
+                note_duration = int(note.duration.quarterLength*12)
+                note_offset = int(note.offset*12 - last_time)
+                last_time = note.offset*12
                 note_velocity = note.volume.velocity
                 les_tokens.append(NOTE_TOKS[note_pitch])
                 les_tokens.append(DUR_TOKS[note_duration])
@@ -85,9 +85,9 @@ def midifolderToTokens(folder_path):
 
                 for note2 in note:
                     note_pitch = note2.pitch.midi
-                    note_duration = int(note.duration.quarterLength*4)
-                    note_offset = int(note.offset*4 - last_time)
-                    last_time = note.offset*4
+                    note_duration = int(note.duration.quarterLength*12)
+                    note_offset = int(note.offset*12 - last_time)
+                    last_time = note.offset*12
                     note_velocity = note2.volume.velocity
                     les_tokens.append(NOTE_TOKS[note_pitch])
                     les_tokens.append(DUR_TOKS[note_duration])
