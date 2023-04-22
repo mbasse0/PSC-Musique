@@ -18,14 +18,14 @@ def generate_sequence(model, start_tokens, max_length=100, temperature=1.0, prog
 
     # L'input donné à l'encoder (vecteur nul dans notre cas, comme pendant l'entraînement)
     taille_bloc = 120
-    X = torch.tensor([0]*taille_bloc).unsqueeze(0).to(device)
+    X = torch.tensor([0]*taille_bloc,device=device).unsqueeze(0)
     N = max_length - len(start_tokens)
     with torch.no_grad():
         les_tokens = start_tokens
         les_genere = []
         for i in (range(max_length - len(start_tokens))):
             # Unsqueeze(0) rajoute une dimension qui correspond au batch_size (qui vaut 1 dans ce cas) pour coller aux shape attendues par le modèle
-            input_tokens = torch.tensor(start_tokens).unsqueeze(0).to(device)
+            input_tokens = torch.tensor(start_tokens, device=device).unsqueeze(0)
             
             output = model(X, input_tokens)
             # Les logits sont des probabilits non normalisées. La température contrôle leur dispersion : permet d'ajouter plus ou moins de bruit lors de la prédiction
