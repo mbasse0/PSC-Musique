@@ -1,4 +1,4 @@
-from vocab import *
+from vocab4types import *
 from music21 import *
 from tqdm import tqdm
 import csv
@@ -18,7 +18,7 @@ def pieceToInputTarget(p):
     '''
     return a couple of vectors (input, target) with input = SOS + piece - last_note; target = piece 
     '''
-    CV_p = [custom_vocab[x] for x in p]
+    CV_p = [custom_vcb[x] for x in p]
     input_p = [0]+CV_p[:-1]
     target_p = CV_p
     return input_p,target_p
