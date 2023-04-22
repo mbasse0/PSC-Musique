@@ -32,7 +32,7 @@ def main(argv):
    # rep_vect = np.load('rep_weimar.npy')
    
    # # Weimar120
-   input_vect, rep_vect = tokensFileToVectInputTarget("./Datasets/Weimarv2.csv",120)
+   input_vect, rep_vect = tokensFileToVectInputTarget("./Datasets/SmallWeimar.csv",120)
 
    #np.save('input_weimar120.npy', input_vect)
    #np.save('rep_weimar120.npy', rep_vect)
@@ -67,7 +67,7 @@ def main(argv):
    trainer.fit(model, train_dataloader, val_dataloader)
 
    # save the model weights to a file
-   torch.save(model.state_dict(), 'model_2epoch_deter_tokentypeloss_512_8_1_4_0.1_0.05.pth')
+   torch.save(model.state_dict(), 'model_10_deter_defaultloss_512_8_1_4_0.1_0.05.pth')
 
 
    # ##GENERER SEQ
