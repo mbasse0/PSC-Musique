@@ -74,7 +74,7 @@ def main(argv):
    trainer.fit(model, train_dataloader, val_dataloader)
 
    # save the model weights to a file
-   torch.save(model.state_dict(), 'modelPetit_1epoch_deter_512_8_1_4_0.1_0.05.pth')
+   torch.save(model.state_dict(), 'model_2epoch_deter_tokentypeloss_512_8_1_4_0.1_0.05.pth')
 
 
    # ##GENERER SEQ
