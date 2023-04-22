@@ -2,8 +2,9 @@ import music21
 from music21 import * 
 from vocab import *
 
+
+
 def tokens_to_stream(token_array):
-    # token_array attend un array de tokens de type string (par exemple ['n58','d2','t5','v106']])
     # Initialize variables to keep track of note properties
     current_pitch = None
     current_duration = None
@@ -23,7 +24,12 @@ def tokens_to_stream(token_array):
             current_duration = int(token[1:])
         elif token.startswith("t"):
             # Token represents a time shift
-            current_offset += int(token[1:])/4
+            time_shift_duration = int(token[1:])/4
+            current_offset += time_shift_duration
+            # Create a rest for the time shift duration and add it to the stream
+            rest = music21.note.Rest(quarterLength=time_shift_duration/2)
+            rest.offset = current_offset - time_shift_duration
+            stream.append(rest)
         elif token.startswith("v"):
             # Token represents a velocity
             current_velocity = int(token[1:])
@@ -51,6 +57,12 @@ def tokens_to_stream(token_array):
             current_velocity = None
 
     return stream
+
+
+
+
+
+
 
 # Define a function to convert an array of tokens to a MIDI file
 def tokens_to_midi(token_array, filename, BPM):
