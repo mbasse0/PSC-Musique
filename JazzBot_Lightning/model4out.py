@@ -29,7 +29,7 @@ class Transformer4(pl.LightningModule):
             dim_model=dim_model, dropout_p=dropout_p, max_len=5000
         )
         num_tokens = len(custom_vocab)
-        self.embedding = nn.Embedding(num_tokens, dim_model)
+        self.embedding = nn.Embedding(num_tokens, dim_model, device = self.device)
         self.transformer = nn.Transformer(
             d_model=dim_model,
             nhead=num_heads,
