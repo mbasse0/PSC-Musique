@@ -3,8 +3,6 @@ from collections import OrderedDict
 
 #special tokens
 SOS = "sos" #start
-EOS = "eos" #end
-PAD = "xxx"  #NAN
 
 SPECIAL = [SOS]
 
@@ -19,11 +17,10 @@ TIM_TOKS = [f't{i}' for i in range(TIM_SIZE)]
 VEL_TOKS = [f'v{i}' for i in range(VEL_SIZE)]
 
 # Le token dummy sert seulement à initialiser les mots du vocab à partir de l'index 1, conformément aux prérequis de la fonction vocab()
-#TODO mettre le SPECIAL avant
-VOCAB_NOTE = ["dummy"] + SPECIAL + NOTE_TOKS 
+VOCAB_NOTE = ["dummy"] + NOTE_TOKS 
 VOCAB_DUR = ["dummy"] + DUR_TOKS
 VOCAB_TIM = ["dummy"] + TIM_TOKS
-VOCAB_VEL = ["dummy"] + VEL_TOKS
+VOCAB_VEL = ["dummy"] + SPECIAL + VEL_TOKS
 
 DICT_NOTE = [(element, index) for index, element in enumerate(VOCAB_NOTE)]
 DICT_DUR = [(element, index) for index, element in enumerate(VOCAB_DUR)]
