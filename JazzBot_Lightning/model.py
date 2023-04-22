@@ -106,7 +106,7 @@ class Transformer(pl.LightningModule):
         # X est ce qu'on donne à l'encoder. Un vecteur nul dans notre cas en l'absence d'informations contextuelles
         X = torch.tensor([0]*len(y_input))
         #y_input, y_expected = y_input.to(self.device), y_expected.to(self.device)
-        X, y_input, y_expected = X.to(self.device) , y_input.to(self.device), y_expected.to(self.device)
+        X, y_input, y_expected = X.to(self.device).clone().detach() , y_input.to(self.device).clone().detach(), y_expected.to(self.device).clone().detach()
 
         # Get mask to mask out the next words
         sequence_length = y_input.size(1)
