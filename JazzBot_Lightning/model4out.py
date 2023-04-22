@@ -38,10 +38,10 @@ class Transformer4(pl.LightningModule):
             dropout=dropout_p,
             batch_first = True
         )
-        self.out1 = nn.Linear(dim_model, n_toks)
-        self.out2 = nn.Linear(dim_model, d_toks)
-        self.out3 = nn.Linear(dim_model, t_toks)
-        self.out4 = nn.Linear(dim_model, v_toks)
+        self.out1 = nn.Linear(dim_model, self.n_toks)
+        self.out2 = nn.Linear(dim_model, self.d_toks)
+        self.out3 = nn.Linear(dim_model, self.t_toks)
+        self.out4 = nn.Linear(dim_model, self.v_toks)
 
     # A modifier pour utiliser 4 out functions différentes selon les cas    
     def forward(self, src, tgt, tgt_mask=None, src_pad_mask=None, tgt_pad_mask=None):

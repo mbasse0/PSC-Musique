@@ -2,6 +2,7 @@ from torch import nn, optim
 import math
 from positional_encoding import *
 #from config import *
+from loss import *
 from vocab import *
 import pytorch_lightning as pl
 

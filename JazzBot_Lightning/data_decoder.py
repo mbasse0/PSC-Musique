@@ -59,11 +59,6 @@ def tokens_to_stream(token_array):
 
     return stream
 
-
-
-
-
-
 # Define a function to convert an array of tokens to a MIDI file
 def tokens_to_midi(token_array, filename, BPM):
     # Convert the token array to a music21 Stream

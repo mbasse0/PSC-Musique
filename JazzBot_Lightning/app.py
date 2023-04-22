@@ -19,7 +19,7 @@ from generate import *
 st.title("JazzBot")
 st.text("Use JazzBot to create a jazz solo")
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-state_dict = torch.load("./model4out.pth",map_location=torch.device(device))
+state_dict = torch.load("./Models/model4out.pth",map_location=torch.device(device))
 model = Transformer(num_tokens=len(custom_vocab), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=4, dropout_p=0.1, learning_rate=0.05).to(device)
 model.load_state_dict(state_dict)
 model.eval()
@@ -97,9 +97,9 @@ if clicked:
 
     ## CONVERSION DE LA SEQUENCE EN MIDI
     generated_tokens = [itos_vocab[el] for el in generated_tokens]
-    tokens_to_midi(generated_tokens, "result.mid", bpm)
+    tokens_to_midi(generated_tokens, "./Results/result.mid", bpm)
 
-    with open("result.mid", "rb") as f:
+    with open("./Results/result.mid", "rb") as f:
         midi_data = f.read()
         gen_midi_data = midi_data
     st.download_button("Download", data=midi_data, file_name="result.mid", mime="audio/midi")

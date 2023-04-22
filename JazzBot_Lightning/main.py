@@ -32,7 +32,7 @@ def main(argv):
    # rep_vect = np.load('rep_weimar.npy')
    
    # # Weimar120
-   # input_vect, rep_vect = tokensFileToVectInputTarget("WeimarFinal.csv",120)
+   input_vect, rep_vect = tokensFileToVectInputTarget("./Datasets/Weimarv2.csv",120)
 
    #np.save('input_weimar120.npy', input_vect)
    #np.save('rep_weimar120.npy', rep_vect)
@@ -43,21 +43,16 @@ def main(argv):
    # ## CREATION DATASET ET DATALOADER
 
    # dataloader = get_dataloader(input_vect, rep_vect, batch_size)
-   # train_dataloader, val_dataloader = get_two_dataloaders(input_vect, rep_vect, batch_size)
+   train_dataloader, val_dataloader = get_two_dataloaders(input_vect, rep_vect, batch_size)
 
 
    ## ENTRAINEMENT
 
    if int(argv[0]) == 1:
-      input_vect, rep_vect = tokensFileToVectInputTarget_4out("WeimarFinal.csv",120)
-      train_dataloader, val_dataloader = get_two_dataloaders(input_vect, rep_vect, batch_size)
       model = Transformer4(
-         n_toks = NOTE_SIZE, d_toks = DUR_SIZE, t_toks = TIM_SIZE, v_toks = VEL_SIZE, dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1, learning_rate = learning_rate
+         dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1, learning_rate = learning_rate
       )
    else:
-      input_vect = np.load('input_weimar.npy')
-      rep_vect = np.load('rep_weimar.npy')
-      train_dataloader, val_dataloader = get_two_dataloaders(input_vect, rep_vect, batch_size)
       model = Transformer(
          num_tokens=len(custom_vocab), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=4, dropout_p=0.1, learning_rate=learning_rate
       )
