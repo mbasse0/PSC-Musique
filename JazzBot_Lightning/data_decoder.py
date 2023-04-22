@@ -2,56 +2,6 @@ import music21
 from music21 import * 
 from vocab import *
 
-# def tokens_to_stream(token_array):
-#     # token_array attend un array de tokens de type string (par exemple ['n58','d2','t5','v106']])
-#     # Initialize variables to keep track of note properties
-#     current_pitch = None
-#     current_duration = None
-#     current_offset = 0.0
-#     current_velocity = None
-    
-#     # Create an empty stream
-#     stream = music21.stream.Stream()
-
-#     # Iterate through the token array and create notes
-#     for token in token_array:
-#         if token.startswith("n"):
-#             # Token represents a pitch
-#             current_pitch = int(token[1:])
-#         elif token.startswith("d"):
-#             # Token represents a duration
-#             current_duration = int(token[1:])
-#         elif token.startswith("t"):
-#             # Token represents a time shift
-#             current_offset += int(token[1:])/4
-#         elif token.startswith("v"):
-#             # Token represents a velocity
-#             current_velocity = int(token[1:])
-#         else:
-#             # Token is not recognized, skip
-#             continue
-
-#         # If all note properties have been set, create a note and add it to the stream
-#         if current_pitch is not None and current_duration is not None and current_velocity is not None:
-#             # Create a note object with the current properties
-#             note = music21.note.Note()
-#             pitch = music21.pitch.Pitch()
-#             pitch.midi = current_pitch
-#             note.pitch = pitch
-#             note.duration = music21.duration.Duration(current_duration/4)
-#             note.volume.velocity = current_velocity
-#             note.offset = current_offset
-
-#             # Add the note to the stream
-#             stream.append(note)
-
-#             # Reset note properties
-#             current_pitch = None
-#             current_duration = None
-#             current_velocity = None
-
-#     return stream
-
 
 
 def tokens_to_stream(token_array):
@@ -77,7 +27,7 @@ def tokens_to_stream(token_array):
             time_shift_duration = int(token[1:])/4
             current_offset += time_shift_duration
             # Create a rest for the time shift duration and add it to the stream
-            rest = music21.note.Rest(quarterLength=time_shift_duration/4)
+            rest = music21.note.Rest(quarterLength=time_shift_duration/2)
             rest.offset = current_offset - time_shift_duration
             stream.append(rest)
         elif token.startswith("v"):
@@ -94,7 +44,7 @@ def tokens_to_stream(token_array):
             pitch = music21.pitch.Pitch()
             pitch.midi = current_pitch
             note.pitch = pitch
-            note.duration = music21.duration.Duration(current_duration/8)
+            note.duration = music21.duration.Duration(current_duration/4)
             note.volume.velocity = current_velocity
             note.offset = current_offset
 
