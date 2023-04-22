@@ -9,8 +9,8 @@ PAD = "xxx"  #NAN
 SPECIAL = [SOS,EOS,PAD]
 
 NOTE_SIZE = 128
-DUR_SIZE = 160
-TIM_SIZE = 1000
+DUR_SIZE = 96 # double ronde max
+TIM_SIZE = 192 # quadruple ronde max
 VEL_SIZE = 128
 
 NOTE_TOKS = [f'n{i}' for i in range(NOTE_SIZE)] 
@@ -47,25 +47,8 @@ def custom_vocab(tok):
     '''
     tok = [note,dur,tim,vel]
     '''
-    return [CV_NOTE[tok[0]],
+    return (CV_NOTE[tok[0]],
             CV_DUR[tok[1]],
             CV_TIM[tok[2]],
-            CV_VEL[tok[3]]]
+            CV_VEL[tok[3]])
 
-def cv_eos():
-    '''
-    return token corresponding to eos
-    '''
-    return [CV_NOTE[EOS],
-            CV_DUR[EOS],
-            CV_TIM[EOS],
-            CV_VEL[EOS]]
-
-def cv_sos():
-    '''
-    return token corresponding to sos
-    '''
-    return [CV_NOTE[SOS],
-            CV_DUR[SOS],
-            CV_TIM[SOS],
-            CV_VEL[SOS]]
