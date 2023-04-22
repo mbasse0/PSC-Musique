@@ -6,7 +6,7 @@ SOS = "sos" #start
 EOS = "eos" #end
 PAD = "xxx"  #NAN
 
-SPECIAL = [SOS,EOS,PAD]
+SPECIAL = [SOS]
 
 NOTE_SIZE = 128
 DUR_SIZE = 96 # double ronde max
@@ -43,6 +43,7 @@ itos_VEL = CV_VEL.get_itos()
 VOCAB_TOTAL = ["dummy"] + SPECIAL + NOTE_TOKS + DUR_TOKS + TIM_TOKS + VEL_TOKS
 DICT_TOTAL = [(element, index) for index, element in enumerate(VOCAB_TOTAL)]
 custom_vocab_4 = vocab(OrderedDict(DICT_TOTAL))
+itos_vocab_4 = custom_vocab_4.get_itos()
 
 
 def custom_vcb(tok):
