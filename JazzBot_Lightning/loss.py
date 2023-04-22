@@ -56,7 +56,7 @@ class rhythmLoss(nn.Module):
 
         high_cost = (loss * mask.float()).mean()
         pct_err = mask.float().mean().item()
-        return loss + high_cost, pct_err
+        return loss + high_cost
     
 
 class harmonicLoss(nn.Module):
@@ -121,7 +121,7 @@ class harmonicLoss(nn.Module):
 
         high_cost = (loss * mask.float()).mean()
         pct_err = mask.float().mean().item()
-        return loss + high_cost, pct_err
+        return loss + high_cost
     
     def harmonicWeigh(self,pitch1 : int, pitch2 : int):
         """
