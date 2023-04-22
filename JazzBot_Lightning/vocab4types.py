@@ -20,10 +20,10 @@ VEL_TOKS = [f'v{i}' for i in range(VEL_SIZE)]
 
 # Le token dummy sert seulement à initialiser les mots du vocab à partir de l'index 1, conformément aux prérequis de la fonction vocab()
 #TODO mettre le SPECIAL avant
-VOCAB_NOTE = ["dummy"] + NOTE_TOKS + SPECIAL 
-VOCAB_DUR = ["dummy"] + DUR_TOKS + SPECIAL
-VOCAB_TIM = ["dummy"] + TIM_TOKS + SPECIAL
-VOCAB_VEL = ["dummy"] + VEL_TOKS + SPECIAL
+VOCAB_NOTE = ["dummy"] + SPECIAL + NOTE_TOKS 
+VOCAB_DUR = ["dummy"] + DUR_TOKS
+VOCAB_TIM = ["dummy"] + TIM_TOKS
+VOCAB_VEL = ["dummy"] + VEL_TOKS
 
 DICT_NOTE = [(element, index) for index, element in enumerate(VOCAB_NOTE)]
 DICT_DUR = [(element, index) for index, element in enumerate(VOCAB_DUR)]
@@ -40,10 +40,12 @@ itos_DUR = CV_DUR.get_itos()
 itos_TIM = CV_TIM.get_itos()
 itos_VEL = CV_VEL.get_itos()
 
-itos_vocab = itos_NOTE + itos_DUR + itos_TIM + itos_VEL
+VOCAB_TOTAL = ["dummy"] + SPECIAL + NOTE_TOKS + DUR_TOKS + TIM_TOKS + VEL_TOKS
+DICT_TOTAL = [(element, index) for index, element in enumerate(VOCAB_TOTAL)]
+custom_vocab_4 = vocab(OrderedDict(DICT_TOTAL))
 
 
-def custom_vocab(tok):
+def custom_vcb(tok):
     '''
     tok = [note,dur,tim,vel]
     '''
