@@ -61,7 +61,7 @@ def main(argv):
       rep_vect = np.load('rep_weimar.npy')
       train_dataloader, val_dataloader = get_two_dataloaders(input_vect, rep_vect, batch_size)
       model = Transformer(
-         num_tokens=len(custom_vocab), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1, learning_rate=learning_rate
+         num_tokens=len(custom_vocab), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=4, dropout_p=0.1, learning_rate=learning_rate
       )
 
    logger = pl.loggers.TensorBoardLogger(save_dir='.')
@@ -74,7 +74,7 @@ def main(argv):
    trainer.fit(model, train_dataloader, val_dataloader)
 
    # save the model weights to a file
-   torch.save(model.state_dict(), 'model_1epoch_deter_512_8_1_6_0.1_0.05.pth')
+   torch.save(model.state_dict(), 'modelPetit_1epoch_deter_512_8_1_4_0.1_0.05.pth')
 
 
    # ##GENERER SEQ
