@@ -41,3 +41,29 @@ def tokensFileToVectInputTarget(nameFile,N):
                 vectInput.append(input)
                 vectTarget.append(target)
     return vectInput,vectTarget
+
+def pieceToInputTarget_4out(p):
+    '''
+    return a couple of vectors (input, target) with input = SOS + piece - last_note; target = piece 
+    '''
+    CV_p = [custom_vocab_4[x] for x in p]
+    input_p = [0]+CV_p[:-1]
+    target_p = CV_p
+    return input_p,target_p
+
+def tokensFileToVectInputTarget_4out(nameFile,N):
+    '''
+    parameters : folder_path, N = number of notes in pieces 
+    read the file
+    '''
+    vectInput = []
+    vectTarget = []
+    with open(nameFile, mode = 'r') as file:
+        reader = csv.reader(file)
+        for tok in tqdm(reader):
+            pieces = tokensToPieces(tok,N)
+            for p in pieces:
+                input,target = pieceToInputTarget_4out(p)
+                vectInput.append(input)
+                vectTarget.append(target)
+    return vectInput,vectTarget
