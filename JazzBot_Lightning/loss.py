@@ -32,7 +32,7 @@ class tokenTypeLoss(nn.Module):
 
         loss = criterion(output.to(device), target.to(device)).to(device)
         batch_size = len(max_indices)
-        mask = torch.Tensor((32, 120), device=device)
+        mask = torch.Tensor((32, 120)).to(device)
         for i in range(batch_size):
             for j in range(len(max_indices[0])):
                 mask[i][j] = itos_vocab[max_indices[i][j]][0] != itos_vocab[target[i][j]][0]
