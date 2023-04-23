@@ -81,6 +81,7 @@ def main(argv):
         ),
         run_config=air.RunConfig(
             name="tune_jazzbot",
+            local_dir="./results"
         ),
         param_space=config,
     )
