@@ -41,7 +41,7 @@ def main(argv):
 
       if int(argv[2]) == 1:
          model = Transformer4(
-            dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1, learning_rate = 0.05
+            dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1, learning_rate = 0.01
          )
       else:
          model = Transformer(
@@ -72,7 +72,7 @@ def main(argv):
 
       if int(argv[2]) == 1:
          model = Transformer4(
-            dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1, learning_rate = 0.05
+            dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1, learning_rate = 0.01
          )
       else:
          model = Transformer(
