@@ -36,8 +36,6 @@ def main(argv):
 
         train_dataloader, val_dataloader = get_two_dataloaders(input_vect, rep_vect, batch_size=config["batch_size"])
         
-        metrics = {"loss": "ptl/val_loss"}
-        
         if (int(argv[0]) == 1):
             trainer = pl.Trainer(max_epochs=num_epochs, gpus=num_gpus, strategy='ddp', accelerator='gpu', benchmark=True, progress_bar_refresh_rate=0, callbacks=[TuneReportCallback(metrics, on="validation_end")])
         else:
@@ -48,7 +46,8 @@ def main(argv):
     num_samples = 10
     num_epochs = int(argv[1])
     gpus_per_trial = 3 if (int(argv[0]) == 1) else 1
-
+    metrics = {"loss": "ptl/val_loss"}
+        
     config = {
         "lr": tune.loguniform(1e-3, 1e-1),
         "batch_size": tune.choice([8, 16, 32, 64]),
