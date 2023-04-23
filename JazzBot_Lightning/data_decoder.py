@@ -47,7 +47,6 @@ def tokens_to_stream(token_array):
         # If all note properties have been set, create a note and add it to the stream
         if current_pitch is not None and current_duration is not None and current_velocity is not None:
             # Create a note object with the current properties
-            print(current_pitch,current_duration*12,current_offset*12)
             note = music21.note.Note()
             pitch = music21.pitch.Pitch()
             pitch.midi = current_pitch

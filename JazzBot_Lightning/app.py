@@ -29,15 +29,13 @@ model.eval()
 
 
 
+file = st.file_uploader("Charger un fichier MIDI",type=['mid'])
 
 temp = st.slider("Température",min_value=0.5,max_value=1.5,value=1.0)
 bpm = 120
 maxl = st.slider("Nombre de notes à générer",min_value=1,max_value=200,value=25)
 maxl *=4
 
-file = st.file_uploader("Upload a MIDI file",type=['mid'])
-temp = st.slider("Temperature",min_value=0.5,max_value=1.5,value=1.0)
-maxl = st.slider("Maximum length of the generated sequence",min_value=20,max_value=400,value=100)
 generated = False
 
 
@@ -97,7 +95,7 @@ def progress_callback(progress):
 
 clicked = False
 if file is not None:
-    clicked = st.button('Generate')
+    clicked = st.button('Générer')
 
 
 
@@ -126,8 +124,7 @@ if clicked:
     generated = True
     html_loader(gen_midi_data, generated)
 
-# webaudio_pianoroll()
-# Modify the webaudio_pianoroll() function call like this:
+
 
 if not generated:
     html_loader(midi_data = st.session_state.get("midi_data", None))
