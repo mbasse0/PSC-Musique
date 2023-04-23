@@ -34,8 +34,8 @@ def tokensFileToVectInputTarget(nameFile,N):
     vectTarget = []
     with open(nameFile, mode = 'r') as file:
         reader = csv.reader(file)
-        for tok in tqdm(reader):
-            pieces = tokensToPieces(tok,N)
+        for tok_row in tqdm(reader):
+            pieces = tokensToPieces(tok_row,N)
             for p in pieces:
                 input,target = pieceToInputTarget(p)
                 vectInput.append(input)
