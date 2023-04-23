@@ -66,6 +66,6 @@ def midiToTokens(filename):
             last_time = note.offset*12   
     if (len(tok)>=1): #######################################changer avant process
         tokens.append(tok)
-    return tokens
+    return tokens[0]
 
 ##########################################################################################################################################################
