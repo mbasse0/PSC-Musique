@@ -13,7 +13,7 @@ def main(argv):
     """
     Ne s'utilise que pour le hyperparameter tuning, donc 
         - uniquement pour train
-        - sans sauver les modèles
+        - sans sauver les modèles   
     L'objectif est uniquement d'obtenir les hyperperameters optimaux, pour ensuite train avec main.py
     
     arg0 : 0 : noDDP , 1 : DDP
@@ -42,7 +42,7 @@ def main(argv):
             print("dddddddddp")
             trainer = pl.Trainer(max_epochs=num_epochs, gpus=num_gpus, strategy='ddp', accelerator='gpu', benchmark=True, progress_bar_refresh_rate=0, callbacks=[TuneReportCallback(metrics, on="validation_end")])
         else:
-            trainer = pl.Trainer(max_epochs=num_epochs, gpus=num_gpus, accelerator='gpu', benchmark=True, progress_bar_refresh_rate=0, callbacks=[TuneReportCallback(metrics, on="validation_end")])
+            trainer = pl.Trainer(max_epochs=num_epochs, gpus=num_gpus, benchmark=True, progress_bar_refresh_rate=0, callbacks=[TuneReportCallback(metrics, on="validation_end")])
     
         trainer.fit(model, train_dataloader, val_dataloader)
   
@@ -64,7 +64,7 @@ def main(argv):
 
     scheduler = ASHAScheduler(
         max_t=num_epochs,
-        grace_period=1,
+        grace_period=3,
         reduction_factor=2)
     
     resources_per_trial = {"cpu": 1, "gpu": gpus_per_trial}
