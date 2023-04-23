@@ -36,14 +36,19 @@ class tokenTypeLoss(nn.Module):
 
         # Assuming you have itos_vocab, max_indices, and target tensors
 
-        # 1. Convert the itos_vocab list into a tensor
-        itos_vocab_tensor = torch.tensor(list(itos_vocab), dtype=torch.int)
+       # Assuming you have itos_vocab, max_indices, and target tensors
 
-        # 2. Use tensor indexing to get the first character of each string for max_indices and target tensors
+        # 1. Convert the first character of each string in itos_vocab to its Unicode code point
+        itos_vocab_code_points = [ord(s[0]) for s in itos_vocab]
+
+        # 2. Convert the list of Unicode code points into a tensor
+        itos_vocab_tensor = torch.tensor(itos_vocab_code_points, dtype=torch.int)
+
+        # 3. Use tensor indexing to get the first character of each string for max_indices and target tensors
         max_indices_chars = itos_vocab_tensor[max_indices]
         target_chars = itos_vocab_tensor[target]
 
-        # 3. Perform an element-wise comparison between max_indices_chars and target_chars
+        # 4. Perform an element-wise comparison between max_indices_chars and target_chars
         mask = (max_indices_chars != target_chars).float().to(device)
 
         # for i in range(batch_size):
