@@ -33,12 +33,18 @@ class tokenTypeLoss(nn.Module):
         loss = criterion(output.to(device), target.to(device)).to(device)
         batch_size = len(max_indices)
         mask = torch.zeros((32, 120)).to(device)
-        for i in range(batch_size):
-            for j in range(len(max_indices[0])):
-                mask[i,j] = (itos_vocab[max_indices[i][j]][0] != itos_vocab[target[i][j]][0])
+        f = np.vectorize(self.tokType)
+        mask = mask.masked_fill(f(max_indices) != f(target), 1.)
+        #for i in range(batch_size):
+        #    for j in range(len(max_indices[0])):
+        #        mask[i,j] = (itos_vocab[max_indices[i][j]][0] != itos_vocab[target[i][j]][0])
         high_cost = self.weight * (loss * mask.float()).mean()
         # return loss, pct_err
         return loss + high_cost
+    
+    def tokType(out):
+        return itos_vocab[out][0]
+
 
 
 class rhythmLoss(nn.Module):
