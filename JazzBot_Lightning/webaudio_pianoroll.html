@@ -50,12 +50,20 @@
   <!-- Existing content -->
   <div class="container">
     <webaudio-pianoroll id="piano-roll" width="1200" height="520" timebase="16" loop="1" xrange="64" yrange="22" markend="960" grid="16" wheelzoom="1" editmode="dragpoly"></webaudio-pianoroll>
+    <!-- Vertical slider -->
+<webaudio-slider id="yoffset" direction="vert" width="24" height="200" min="30" max="120" value="60"></webaudio-slider>
+
+<!-- Horizontal slider -->
+<webaudio-slider id="xoffset" direction="horz" width="200" height="24" min="0" max="200" value="0"></webaudio-slider>
   </div>
+ 
+
   <button id="play-stop-button" onclick="togglePlayStop()" disabled>Play</button>
   <input type="file" id="midi-file-input" style="display:none;" accept=".mid" />
   <button id="load-midi-button" onclick="loadMidiFile()">Load MIDI</button>
   <button id="download-midi-button" onclick="downloadMidiFile()">Download MIDI</button>
   <div id="music-score"></div>
+  <script src="https://cdn.jsdelivr.net/gh/g200kg/webaudio-controls/webaudio-controls.js"></script>
 
   <script src="https://cdn.jsdelivr.net/gh/g200kg/webaudio-pianoroll/webaudio-pianoroll.js"></script>
   <script src="https://colxi.info/midi-parser-js/src/main.js"></script>
@@ -67,6 +75,7 @@
   <script>
     parseMidi = module.exports;
   </script>
+ 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.34/Tone.js"></script>
 <script type="module">
     import MidiWriter from 'https://cdn.skypack.dev/midi-writer-js@2.1.4';
@@ -209,7 +218,24 @@ function Callback(ev) {
   });
 };
 
+// Get the sliders and the piano roll element
+const yoffsetSlider = document.getElementById("yoffset");
+  const xoffsetSlider = document.getElementById("xoffset");
+  const pianoRoll = document.getElementById("piano-roll");
+
+  // Function to update the piano roll's yoffset and xoffset
+  function updatePianoRollOffsets() {
+    pianoRoll.yoffset = yoffsetSlider.value;
+    pianoRoll.xoffset = xoffsetSlider.value;
+    pianoRoll.redraw();
+  }
+
+  // Add event listeners for the sliders' input events
+  yoffsetSlider.addEventListener("input", updatePianoRollOffsets);
+  xoffsetSlider.addEventListener("input", updatePianoRollOffsets);
+
     });
+
 
 
 
