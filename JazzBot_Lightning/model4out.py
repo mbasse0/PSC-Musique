@@ -61,7 +61,7 @@ class Transformer4(pl.LightningModule):
 
         # Pour toutes les valeurs du batch size, on passe le résultat du transformer (de la taille de l'embeddding) dans la couche out adaptée afin d'obtenir un output final de la taille du vocab
         for d in range(len(prev_token)):
-            
+
             type_tok = itos_vocab[prev_token[d]][0]
 
             if type_tok =='n':      
@@ -69,7 +69,7 @@ class Transformer4(pl.LightningModule):
                 before = torch.zeros((batch_size,seq_len,self.n_toks), device=self.device)
                 before = before.masked_fill(before == 0, float('-inf'))
                 after = torch.zeros((batch_size,seq_len,self.v_toks+self.t_toks), device=self.device)
-                after = after.masked_fill(before == 0, float('-inf'))
+                after = after.masked_fill(after == 0, float('-inf'))
                 out = torch.cat((before,out,after),dim=2).to(self.device)
 
             elif type_tok=='d':
@@ -77,7 +77,7 @@ class Transformer4(pl.LightningModule):
                 before = torch.zeros((batch_size,seq_len,self.n_toks+self.d_toks), device=self.device)
                 before = before.masked_fill(before == 0, float('-inf'))
                 after = torch.zeros((batch_size,seq_len,self.v_toks), device=self.device)
-                after = after.masked_fill(before == 0, float('-inf'))
+                after = after.masked_fill(after == 0, float('-inf'))
                 out = torch.cat((before,out,after),dim=2).to(self.device)
 
             elif type_tok=='t':
@@ -89,7 +89,7 @@ class Transformer4(pl.LightningModule):
             elif type_tok=='v':
                 out = self.out1(transformer_out)
                 after = torch.zeros((batch_size,seq_len,self.n_toks + self.d_toks + self.t_toks), device=self.device)
-                after = after.masked_fill(before == 0, float('-inf'))
+                after = after.masked_fill(after == 0, float('-inf'))
                 out = torch.cat((out,after),dim=2).to(self.device)
 
         # out size : (batch_size,sequance length, num_toks)
