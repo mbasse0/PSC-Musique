@@ -36,7 +36,7 @@ def chordToToken(chord, last_time):
 def midiToTokens(filename):
     '''
     parameter : folder_path,f = name of the midi file
-    read a midi file and extract the notes in several arrays of tokens (cut where issues occur), return only the first array
+    read a midi file and return the first starting_tokens (until exception raised #1)
     '''
     tokens = []
     midi_file = midi.MidiFile()
@@ -55,8 +55,8 @@ def midiToTokens(filename):
         if note.isNote:
             time_rest = note.offset*12-last_time
             # print(note, time_rest)
-            if  time_rest < 0 or time_rest >= 192 or note.duration.quarterLength*12>=96:
-                if(len(tok)>=120):
+            if  time_rest < 0 or time_rest >= 192 or note.duration.quarterLength*12>=96: #exception #1
+                if(len(tok)>=100): #arbitrary, at least 25 notes
                     tokens.append(tok)
                     tok = []
             else :
@@ -65,9 +65,10 @@ def midiToTokens(filename):
 
                 if note.isChord:
                     tok+=chordToToken(note,last_time)
-            last_time = note.offset*12   
-    if (len(tok)>=120):
-        tokens.append(tok)
+            last_time = note.offset*12 
+
+    #reading a file to generate music, not to preprocess a database
+    tokens.append(tok)
 
     return tokens[0]
 
