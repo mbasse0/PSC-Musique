@@ -21,8 +21,8 @@ class tokenTypeLoss(nn.Module):
         device = "cuda" if torch.cuda.is_available() else "cpu"
         # target = torch.LongTensor(target).to(device)
         criterion = nn.CrossEntropyLoss()
-        # print("output", output, output.shape)
-        # print("target", target, target.shape)
+        print("output", output, output.shape)
+        print("target", target, target.shape)
 
         softmax_output = F.softmax(output, dim=-1)
 
@@ -35,7 +35,7 @@ class tokenTypeLoss(nn.Module):
         mask = torch.Tensor((32, 120)).to(device)
         for i in range(batch_size):
             for j in range(len(max_indices[0])):
-                mask[i,j] = (itos_vocab[max_indices[i][j]][0] != itos_vocab[target[j]][0])
+                mask[i,j] = (itos_vocab[max_indices[i][j]][0] != itos_vocab[target[i][j]][0])
         high_cost = self.weight * (loss * mask.float()).mean()
         # return loss, pct_err
         return loss + high_cost
