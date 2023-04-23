@@ -59,7 +59,7 @@ class Transformer4(pl.LightningModule):
         transformer_out = self.transformer(src, tgt, tgt_mask=tgt_mask, src_key_padding_mask=src_pad_mask, tgt_key_padding_mask=tgt_pad_mask)
         # Out size = (batch_size, sequence length, dim_model) 
 
-        a = - 2.
+        a = - 10000000.
 
         # Pour toutes les valeurs du batch size, on passe le résultat du transformer (de la taille de l'embeddding) dans la couche out adaptée afin d'obtenir un output final de la taille du vocab
         for d in range(len(prev_token)):
