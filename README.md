@@ -30,6 +30,7 @@ Etapes pour faire tourner sur une machine de l'X un script python (installation 
 - télécharger torchtext : python -m pip install torchtext==0.11.1
 - télécharger music21 : python -m pip install music21==6.7.1
 - télécharger lightning : python -m pip install pytorch-lightning==1.5.10
+- télécharger ray tune : pip install "ray[tune]"
 
 
 \\
