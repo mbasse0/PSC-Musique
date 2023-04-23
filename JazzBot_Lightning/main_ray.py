@@ -16,25 +16,31 @@ from ray import tune
 
 def main():
 
-   def train_jazzbot(config, data_dir=None, num_epochs=10, num_gpus=3):
-    model = Transformer4(
-         n_toks = len(itos_NOTE), d_toks = len(itos_DUR), t_toks = len(itos_TIM), v_toks = len(itos_VEL), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1, learning_rate = config['lr']
-      )
-  
-      
-    train_dataloader, val_dataloader = get_two_dataloaders(input_vect, rep_vect, batch_size=config["batch_size"])
-      
-    metrics = {"loss": "ptl/val_loss"}
-      
-    trainer = pl.Trainer(max_epochs=num_epochs, gpus=num_gpus, progress_bar_refresh_rate=0, callbacks=[TuneReportCallback(metrics, on="validation_end")])
- 
-    trainer.fit(model, trainer.fit(model, train_dataloader, val_dataloader))
+    dataset_path = "./Datasets/"
+    input_vect, rep_vect = tokensFileToVectInputTarget(dataset_path,120)
+
+    def train_jazzbot(config, data_dir=None, num_epochs=10, num_gpus=3):
+        model = Transformer(
+            num_tokens=len(custom_vocab), 
+            dim_model=512, 
+            num_heads=8, 
+            num_encoder_layers=1, 
+            num_decoder_layers=4, 
+            dropout_p=0.1, 
+            learning_rate= 0.05
+            )
+
+        train_dataloader, val_dataloader = get_two_dataloaders(input_vect, rep_vect, batch_size=config["batch_size"])
+        
+        metrics = {"loss": "ptl/val_loss"}
+        
+        trainer = pl.Trainer(max_epochs=num_epochs, gpus=num_gpus, progress_bar_refresh_rate=0, callbacks=[TuneReportCallback(metrics, on="validation_end")])
+    
+        trainer.fit(model, train_dataloader, val_dataloader)
   
     num_samples = 10
     num_epochs = 10
     gpus_per_trial = 3 
-
-    input_vect, rep_vect = tokensFileToVectInputTarget_4out("WeimarFinal.csv",120)
 
     config = {
         "lr": tune.loguniform(1e-4, 1e-1),
