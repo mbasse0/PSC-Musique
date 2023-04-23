@@ -1,13 +1,7 @@
-from vocab import *
 from model import *
 from model4out import *
-import numpy as np
-from generate import *
-from data_encoder import *
 from dataset import *
 import pytorch_lightning as pl
-from config import *
-import sys
 from csv_encoder import *
 
 from ray.tune.integration.pytorch_lightning import TuneReportCallback
@@ -16,10 +10,10 @@ from ray import tune
 
 def main():
 
-    dataset_path = "./Datasets/"
+    dataset_path = "./Datasets/SmallWeimarv3.csv"
     input_vect, rep_vect = tokensFileToVectInputTarget(dataset_path,120)
 
-    def train_jazzbot(config, data_dir=None, num_epochs=10, num_gpus=3):
+    def train_jazzbot(config, data_dir=None, num_epochs=1, num_gpus=1):
         model = Transformer(
             num_tokens=len(custom_vocab), 
             dim_model=512, 
@@ -34,13 +28,13 @@ def main():
         
         metrics = {"loss": "ptl/val_loss"}
         
-        trainer = pl.Trainer(max_epochs=num_epochs, gpus=num_gpus, progress_bar_refresh_rate=0, callbacks=[TuneReportCallback(metrics, on="validation_end")])
+        trainer = pl.Trainer(max_epochs=num_epochs, gpus=num_gpus, accelerator='gpu', benchmark=True, progress_bar_refresh_rate=0, callbacks=[TuneReportCallback(metrics, on="validation_end")])
     
         trainer.fit(model, train_dataloader, val_dataloader)
   
     num_samples = 10
-    num_epochs = 10
-    gpus_per_trial = 3 
+    num_epochs = 2
+    gpus_per_trial = 1
 
     config = {
         "lr": tune.loguniform(1e-4, 1e-1),
