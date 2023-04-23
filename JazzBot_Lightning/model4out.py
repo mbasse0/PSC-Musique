@@ -59,7 +59,7 @@ class Transformer4(pl.LightningModule):
         transformer_out = self.transformer(src, tgt, tgt_mask=tgt_mask, src_key_padding_mask=src_pad_mask, tgt_key_padding_mask=tgt_pad_mask)
         # Out size = (batch_size, sequence length, dim_model) 
 
-        a = - 10.
+        a = float('-inf')
 
         # Pour toutes les valeurs du batch size, on passe le résultat du transformer (de la taille de l'embeddding) dans la couche out adaptée afin d'obtenir un output final de la taille du vocab
         for d in range(len(prev_token)):
@@ -145,9 +145,9 @@ class Transformer4(pl.LightningModule):
 
         # Permute pred to have batch size first again
         pred = pred.permute(0, 2, 1)
-        lossF = nn.CrossEntropyLoss()
+        # lossF = nn.CrossEntropyLoss()
         # lossF = harmonicLoss([5,1,1,1], [0.6, 0.6, 0.2, 0.2, 0.2, 0.2, 1.5])
-        # lossF = loss_4out()
+        lossF = loss_4out()
         loss = lossF(pred, y_expected)
         self.log('Training loss', loss)
         return loss
@@ -172,9 +172,9 @@ class Transformer4(pl.LightningModule):
 
         # Permute pred to have batch size first again
         pred = pred.permute(0, 2, 1)
-        lossF = nn.CrossEntropyLoss()
+        # lossF = nn.CrossEntropyLoss()
         #lossF = harmonicLoss([5,1,1,1], [0.6, 0.6, 0.2, 0.2, 0.2, 0.2, 1.5])
-        # lossF = loss_4out()
+        lossF = loss_4out()
         loss = lossF(pred, y_expected)
         self.log('Validation loss', loss)
         return loss
