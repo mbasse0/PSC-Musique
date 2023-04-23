@@ -37,7 +37,6 @@ class tokenTypeLoss(nn.Module):
             mask[i] = Tensor([itos_vocab[max_indices[i][j]][0] != itos_vocab[target[i][j]][0] for j in range(len(max_indices[0]))])
         # mask = Tensor([itos_vocab[output[i]][0] != itos_vocab[target[i]][0] for i in range(output.size)])
         high_cost = self.weight * (loss * mask.float()).mean()
-        pct_err = mask.float().mean().item()
         # return loss, pct_err
         return loss + high_cost
 
