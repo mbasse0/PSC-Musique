@@ -70,13 +70,11 @@ def tokens_to_stream(token_array):
 
 
 # Define a function to convert an array of tokens to a MIDI file
-def tokens_to_midi(token_array, filename, BPM):
+def tokens_to_midi(token_array, filename, bpm):
     # Convert the token array to a music21 Stream
     stream = tokens_to_stream(token_array)
-
     # Set the BPM
-    mm = music21.tempo.MetronomeMark(number=BPM)
-    stream.insert(0, mm)
+    stream.insert(0, bpm)
 
     # Create a MIDI file from the Stream and save it
     midi_file = music21.midi.translate.streamToMidiFile(stream)
