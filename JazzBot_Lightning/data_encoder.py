@@ -44,6 +44,7 @@ def midiToTokens(filename):
     midi_file.read()
     midi_file.close()
     stream = midi.translate.midiFileToStream(midi_file)
+    part = stream.voicesToParts()[0]
     last_time = 0
     tokens = []
     tok = []
@@ -55,7 +56,7 @@ def midiToTokens(filename):
         if note.isNote:
             time_rest = note.offset*12-last_time
             # print(note, time_rest)
-            if  time_rest < 0 or time_rest >= 192 or note.duration.quarterLength*12>=96: #exception #1
+            if  time_rest >= 192 or note.duration.quarterLength*12>=96: #exception #1
                 if(len(tok)>=100): #arbitrary, at least 25 notes
                     tokens.append(tok)
                     tok = []
