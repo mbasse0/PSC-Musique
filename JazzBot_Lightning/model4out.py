@@ -66,13 +66,13 @@ class Transformer4(pl.LightningModule):
 
             if type_tok =='n':      
                 out = self.out2(transformer_out) # out size = (batch_size,sequance length, d_toks)
+                if d%100 == 0:
+                    print(out)
                 before = torch.zeros((batch_size,seq_len,self.n_toks), device=self.device)
                 before = before.masked_fill(before == 0, float('-inf'))
                 after = torch.zeros((batch_size,seq_len,self.v_toks+self.t_toks), device=self.device)
                 after = after.masked_fill(after == 0, float('-inf'))
                 out = torch.cat((before,out,after),dim=2).to(self.device)
-                if d%10==0:
-                    print(out)
 
             elif type_tok=='d':
                 out = self.out3(transformer_out)
