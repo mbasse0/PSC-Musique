@@ -11,24 +11,29 @@ from vocab import *
 from data_decoder import *
 from data_encoder import *
 from generate import *
+import music21
 
-
-
+st.set_page_config(
+    layout="wide",  # Can be "centered" or "wide"
+    initial_sidebar_state="auto",  # Can be "auto", "expanded", "collapsed"
+)
 
 
 st.title("JazzBot")
-st.text("Use JazzBot to create a jazz solo")
+st.text("Générer un solo de Jazz à partir d'un fichier MIDI")
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-state_dict = torch.load("./Models/model_10_deter_customloss_512_8_1_4_0.1_0.05.pth",map_location=torch.device(device))
+state_dict = torch.load("./Models/model_10_deter_CustomLoss_512_8_1_4_0.1_0.05.pth",map_location=torch.device(device))
 model = Transformer(num_tokens=len(custom_vocab), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=4, dropout_p=0.1, learning_rate=0.05).to(device)
 model.load_state_dict(state_dict)
 model.eval()
 
-file = st.file_uploader("Upload a MIDI file",type=['mid'])
+file = st.file_uploader("Charger un fichier MIDI",type=['mid'])
 
-temp = st.slider("Temperature",min_value=0.5,max_value=1.5,value=1.0)
+
+temp = st.slider("Température",min_value=0.5,max_value=1.5,value=1.0)
 bpm = 120
-maxl = st.slider("Maximum length of the generated sequence",min_value=20,max_value=400,value=100)
+maxl = st.slider("Nombre de notes à générer",min_value=1,max_value=200,value=25)
+maxl *=4
 generated = False
 
 
@@ -87,6 +92,7 @@ if clicked:
     print("taille_generée:", maxl)
     print("Device:", device)
 
+    print("les start tokens", start_tokens)
     start_tokens = [custom_vocab[el] for el in start_tokens]
     # Generate a sequence of tokens
     generated_tokens = generate_sequence(model, start_tokens, max_length=maxl+len(start_tokens), temperature=temp, progress_callback=progress_callback)
