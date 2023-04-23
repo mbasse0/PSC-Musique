@@ -74,7 +74,7 @@ class Transformer(pl.LightningModule):
     # Genere un masque triangulaire  
     def get_tgt_mask(self, size) -> torch.tensor:
         # Generates a squeare matrix where the each row allows one word more to be seen
-        mask = torch.tril(torch.ones(size, size) == 1) # Lower triangular matrix
+        mask = torch.tril(torch.ones((size, size), device=self.device) == 1) # Lower triangular matrix
         mask = mask.float()
         mask = mask.masked_fill(mask == 0, float('-inf')) # Convert zeros to -inf
         mask = mask.masked_fill(mask == 1, float(0.0)) # Convert ones to 0
@@ -105,13 +105,13 @@ class Transformer(pl.LightningModule):
         # appartiennent à [0,1417]^(120)^(batchsize)
 
         # X est ce qu'on donne à l'encoder. Un vecteur nul dans notre cas en l'absence d'informations contextuelles
-        X = torch.tensor([0]*len(y_input))
-        #y_input, y_expected = y_input.to(self.device), y_expected.to(self.device)
-        X, y_input, y_expected = X.to(self.device).clone().detach() , y_input.to(self.device).clone().detach(), y_expected.to(self.device).clone().detach()
+        X = torch.tensor(([0]*len(y_input)), device=self.device)
+        y_input, y_expected = y_input.to(self.device), y_expected.to(self.device)
+        # X, y_input, y_expected = X.to(self.device) , y_input.to(self.device), y_expected.to(self.device)
 
         # Get mask to mask out the next words
         sequence_length = y_input.size(1)
-        tgt_mask = self.get_tgt_mask(sequence_length).to(self.device)
+        tgt_mask = self.get_tgt_mask(sequence_length)
 
         # Standard training except we pass in y_input and tgt_mask
         pred = self(X, y_input, tgt_mask)
@@ -123,7 +123,7 @@ class Transformer(pl.LightningModule):
         # lossF = nn.CrossEntropyLoss()
         lossF = tokenTypeLoss(3.)
         loss = lossF(pred, y_expected)
-        self.log('Training loss', loss)
+        self.log("ptl/train_loss", loss)
         return loss
     
     def validation_step(self, batch, batchidx):
@@ -132,13 +132,12 @@ class Transformer(pl.LightningModule):
         # appartiennent à [0,1417]^(120)^(batchsize)
 
         # X est ce qu'on donne à l'encoder. Un vecteur nul dans notre cas en l'absence d'informations contextuelles
-        X = torch.tensor([0]*len(y_input))
-        #y_input, y_expected = y_input.to(self.device), y_expected.to(self.device)
-        X, y_input, y_expected = X.to(self.device).clone().detach() , y_input.to(self.device).clone().detach(), y_expected.to(self.device).clone().detach()
+        X = torch.tensor(([0]*len(y_input)), device=self.device)
+        y_input, y_expected = y_input.to(self.device), y_expected.to(self.device)
 
         # Get mask to mask out the next words
         sequence_length = y_input.size(1)
-        tgt_mask = self.get_tgt_mask(sequence_length).to(self.device)
+        tgt_mask = self.get_tgt_mask(sequence_length)
 
         # Standard training except we pass in y_input and tgt_mask
         pred = self(X, y_input, tgt_mask)
@@ -150,5 +149,8 @@ class Transformer(pl.LightningModule):
         lossF = nn.CrossEntropyLoss()
         # lossF = tokenTypeLoss(3.)
         loss = lossF(pred, y_expected)
-        self.log('Validation loss', loss)
-        return loss
+        return {"val_loss": loss}
+
+    def validation_epoch_end(self, outputs):
+        avg_loss = torch.stack([x["val_loss"] for x in outputs]).mean()
+        self.log("ptl/val_loss", avg_loss)
