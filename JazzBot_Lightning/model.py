@@ -120,8 +120,8 @@ class Transformer(pl.LightningModule):
 
         # Permute pred to have batch size first again
         pred = pred.permute(0, 2, 1)
-        #lossF = nn.CrossEntropyLoss()
-        lossF = rhythmLoss([3.,0.,0.,0.,0.])
+        lossF = nn.CrossEntropyLoss()
+        # lossF = rhythmLoss([3.,0.,0.,0.,0.])
         loss = lossF(pred, y_expected)
         self.log('Training loss', loss)
         return loss
@@ -147,8 +147,8 @@ class Transformer(pl.LightningModule):
 
         # Permute pred to have batch size first again
         pred = pred.permute(0, 2, 1)
-        #lossF = nn.CrossEntropyLoss()
-        lossF = rhythmLoss([3.,0.,0.,0.,0.])
+        lossF = nn.CrossEntropyLoss()
+        # lossF = rhythmLoss([3.,0.,0.,0.,0.])
         loss = lossF(pred, y_expected)
         self.log('Validation loss', loss)
         return loss
