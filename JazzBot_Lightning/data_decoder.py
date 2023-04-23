@@ -14,10 +14,9 @@ def tokens_to_stream(token_array):
     previous_duration = None
 
     # Create an empty stream
-    stream = music21.stream.Stream()
+    str= music21.stream.Stream()
 
     # Iterate through the token array and create notes
-    
     for token in token_array:
         if token.startswith("n"):
             # Token represents a pitch
@@ -28,7 +27,7 @@ def tokens_to_stream(token_array):
         elif token.startswith("t"):
             # Token represents a time shift
             time_shift_duration = int(token[1:])/12
-            current_offset += time_shift_duration #offset jamais réactualisé
+            current_offset += time_shift_duration 
             if previous_duration is not None:
                 time_rest = time_shift_duration -  previous_duration 
                 # Create a rest for the time shift duration and add it to the stream
@@ -36,7 +35,7 @@ def tokens_to_stream(token_array):
                     rest = music21.note.Rest()
                     rest.duration.quarterLength = time_rest
                     rest.offset = current_offset - time_shift_duration
-                    stream.append(rest)
+                    str.insert(rest.offset,rest)
         
         elif token.startswith("v"):
             # Token represents a velocity
@@ -46,8 +45,9 @@ def tokens_to_stream(token_array):
             continue
 
         # If all note properties have been set, create a note and add it to the stream
-        if current_pitch is not None and current_velocity is not None and current_duration is not None:
+        if current_pitch is not None and current_duration is not None and current_velocity is not None:
             # Create a note object with the current properties
+            print(current_pitch,current_duration*12,current_offset*12)
             note = music21.note.Note()
             pitch = music21.pitch.Pitch()
             pitch.midi = current_pitch
@@ -56,8 +56,9 @@ def tokens_to_stream(token_array):
             note.volume.velocity = current_velocity
             note.offset = current_offset
 
-            # Add the note to the stream
-            stream.append(note)
+            # # Add the note to the stream
+            str.insert(note.offset,note)
+
 
             # Reset note properties
             current_pitch = None
@@ -65,7 +66,8 @@ def tokens_to_stream(token_array):
             current_duration = None
             current_velocity = None
 
-    return stream
+    return str
+
 
 # Define a function to convert an array of tokens to a MIDI file
 def tokens_to_midi(token_array, filename, BPM):
