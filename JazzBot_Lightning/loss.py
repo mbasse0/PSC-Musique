@@ -35,13 +35,10 @@ class tokenTypeLoss(nn.Module):
         mask = torch.Tensor((32, 120)).to(device)
         for i in range(batch_size):
             for j in range(len(max_indices[0])):
-                mask[i,j] = (itos_vocab[max_indices[i][j]][0] != itos_vocab[target[i][j]][0])
+                mask[i,j] = (itos_vocab[max_indices[i][j]][0] != itos_vocab[target[j]][0])
         high_cost = self.weight * (loss * mask.float()).mean()
         # return loss, pct_err
         return loss + high_cost
-    
-    def tokType(out):
-        return itos_vocab[out][0]
 
 
 
