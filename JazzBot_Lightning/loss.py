@@ -32,9 +32,10 @@ class tokenTypeLoss(nn.Module):
 
         loss = criterion(output.to(device), target.to(device)).to(device)
         batch_size = len(max_indices)
-        mask = torch.zeros((32, 120)).to(device)
-        for i in range(batch_size):
-            mask[i] = Tensor([itos_vocab[max_indices[i][j]][0] != itos_vocab[target[i][j]][0] for j in range(len(max_indices[0]))])
+        mask = torch.Tensor((32, 120), device = device)
+        mask = mask.masked_fill(itos_vocab[max_indices][0] != itos_vocab[target][0], 1.)
+        #for i in range(batch_size):
+        #    mask[i] = Tensor([itos_vocab[max_indices[i][j]][0] != itos_vocab[target[i][j]][0] for j in range(len(max_indices[0]))])
         # mask = Tensor([itos_vocab[output[i]][0] != itos_vocab[target[i]][0] for i in range(output.size)])
         high_cost = self.weight * (loss * mask.float()).mean()
         # return loss, pct_err
