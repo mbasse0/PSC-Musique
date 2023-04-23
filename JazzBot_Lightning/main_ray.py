@@ -27,7 +27,7 @@ def main():
             num_encoder_layers=1, 
             num_decoder_layers=4, 
             dropout_p=0.1, 
-            learning_rate= 0.05
+            learning_rate=config["lr"]
             )
 
         train_dataloader, val_dataloader = get_two_dataloaders(input_vect, rep_vect, batch_size=config["batch_size"])
