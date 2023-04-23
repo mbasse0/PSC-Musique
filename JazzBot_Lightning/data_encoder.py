@@ -40,22 +40,21 @@ def midiToTokens(filename):
     '''
     tokens = []
     midi_file = midi.MidiFile()
-    midi_file.open(filename)
+    midi_file.open(folder_path +f)
     midi_file.read()
     midi_file.close()
     stream = midi.translate.midiFileToStream(midi_file)
-    last_time = 0
     tokens = []
     tok = []
     start = True
-    for note in stream.flat.notesAndRests:
-        if start and note.isRest:
-            last_time = note.duration.quarterLength*12
+    for note in stream.flat.notes:
+        if start :
+            last_time = note.offset*12
             start = False
         if note.isNote:
             time_rest = note.offset*12-last_time
             if  time_rest >= 192 or note.duration.quarterLength*12>=96: #exception #1
-                if(len(tok)>=100): #arbitrary, at least 25 notes
+                if(len(tok)>=121): #arbitrary, at least 25 notes
                     tokens.append(tok)
                     tok = []
             else :
@@ -63,12 +62,11 @@ def midiToTokens(filename):
                     tok+=noteToToken(note,last_time)
 
                 if note.isChord:
+                    print("accord")
                     tok+=chordToToken(note,last_time)
-            last_time = note.offset*12 
-
-    #reading a file to generate music, not to preprocess a database
-    tokens.append(tok)
-
-    return tokens[0]
+            last_time = note.offset*12   
+    if (len(tok)>=1): #######################################changer avant process
+        tokens.append(tok)
+    return tokens
 
 ##########################################################################################################################################################
