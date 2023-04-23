@@ -81,6 +81,7 @@ def main(argv):
 
       model_path = "./Models/" + argv[1]
       model.load_state_dict(torch.load(model_path, map_location=device))
+      model.device = device
 
       nb_tokens = int(argv[3])
       generated_tokens = generate_sequence(model, start_tokens, max_length=nb_tokens, temperature = temp)
