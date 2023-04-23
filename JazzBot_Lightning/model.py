@@ -123,7 +123,7 @@ class Transformer(pl.LightningModule):
         # lossF = nn.CrossEntropyLoss()
         lossF = tokenTypeLoss(3.)
         loss = lossF(pred, y_expected)
-        self.log('Training loss', loss)
+        self.log("ptl/train_loss", loss)
         return loss
     
     def validation_step(self, batch, batchidx):
@@ -150,5 +150,8 @@ class Transformer(pl.LightningModule):
         lossF = nn.CrossEntropyLoss()
         # lossF = tokenTypeLoss(3.)
         loss = lossF(pred, y_expected)
-        self.log('Validation loss', loss)
-        return loss
+        return {"val_loss": loss}
+
+    def validation_epoch_end(self, outputs):
+        avg_loss = torch.stack([x["val_loss"] for x in outputs]).mean()
+        self.log("ptl/val_loss", avg_loss)

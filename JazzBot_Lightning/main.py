@@ -51,9 +51,9 @@ def main(argv):
       logger = pl.loggers.TensorBoardLogger(save_dir='.')
 
       if int(argv[3]) == 1:
-         trainer = pl.Trainer(accelerator='gpu', gpus=3, strategy='ddp', max_epochs=nb_epochs, log_every_n_steps=20, benchmark=True, profiler="simple", logger=logger)
+         trainer = pl.Trainer(accelerator='gpu', gpus=3, strategy='ddp', max_epochs=nb_epochs, log_every_n_steps=20, benchmark=True, logger=logger)
       else:
-         trainer = pl.Trainer(accelerator='gpu', gpus=1, max_epochs=nb_epochs, log_every_n_steps=20, benchmark=True, profiler="simple", logger=logger)
+         trainer = pl.Trainer(accelerator='gpu', gpus=1, max_epochs=nb_epochs, log_every_n_steps=20, benchmark=True, logger=logger)
 
       trainer.fit(model, train_dataloader, val_dataloader)
 
