@@ -5,12 +5,22 @@ import pytorch_lightning as pl
 from csv_encoder import *
 
 from ray.tune.integration.pytorch_lightning import TuneReportCallback
-import tempfile
 from ray import tune
+import sys
 
-def main():
-
-    dataset_path = "./Datasets/SmallWeimarv3.csv"
+def main(argv):
+    """
+    Ne s'utilise que pour le hyperparameter tuning, donc 
+        - uniquement pour train
+        - sans sauver les modèles
+    L'objectif est uniquement d'obtenir les hyperperameters optimaux, pour ensuite train avec main.py
+    
+    arg0 : 0 : noDDP , 1 : DDP
+    arg1 : nb_epochs
+    arg2 : dataset_name
+    
+    """
+    dataset_path = "./Datasets/" + argv[2]
     input_vect, rep_vect = tokensFileToVectInputTarget(dataset_path,120)
 
     def train_jazzbot(config, data_dir=None, num_epochs=1, num_gpus=1):
@@ -28,17 +38,20 @@ def main():
         
         metrics = {"loss": "ptl/val_loss"}
         
-        trainer = pl.Trainer(max_epochs=num_epochs, gpus=num_gpus, accelerator='gpu', benchmark=True, progress_bar_refresh_rate=0, callbacks=[TuneReportCallback(metrics, on="validation_end")])
+        if (int(argv[0]) == 1):
+            trainer = pl.Trainer(max_epochs=num_epochs, gpus=num_gpus, strategy='ddp', accelerator='gpu', benchmark=True, progress_bar_refresh_rate=0, callbacks=[TuneReportCallback(metrics, on="validation_end")])
+        else:
+            trainer = pl.Trainer(max_epochs=num_epochs, gpus=num_gpus, accelerator='gpu', benchmark=True, progress_bar_refresh_rate=0, callbacks=[TuneReportCallback(metrics, on="validation_end")])
     
         trainer.fit(model, train_dataloader, val_dataloader)
   
     num_samples = 10
-    num_epochs = 2
-    gpus_per_trial = 1
+    num_epochs = int(argv[1])
+    gpus_per_trial = 3 if (int(argv[0]) == 1) else 1
 
     config = {
-        "lr": tune.loguniform(1e-4, 1e-1),
-        "batch_size": tune.choice([32, 64, 128]),
+        "lr": tune.loguniform(1e-3, 1e-1),
+        "batch_size": tune.choice([8, 16, 32, 64]),
     }
 
     trainable = tune.with_parameters(
@@ -63,4 +76,4 @@ def main():
 
 
 if __name__=="__main__":
-   main()
+   main(sys.argv[1:])
