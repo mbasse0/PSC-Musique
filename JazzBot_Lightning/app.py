@@ -25,9 +25,7 @@ model.load_state_dict(state_dict)
 model.eval()
 
 file = st.file_uploader("Upload a MIDI file",type=['mid'])
-
 temp = st.slider("Temperature",min_value=0.5,max_value=1.5,value=1.0)
-bpm = 120
 maxl = st.slider("Maximum length of the generated sequence",min_value=20,max_value=400,value=100)
 generated = False
 
@@ -37,6 +35,18 @@ if file is not None:
         f.write(file.getbuffer())
     st.session_state.midi_data = file.getbuffer().tobytes()  # Add this line to store the MIDI data in the session state
 
+
+if file is not None:
+    midi_file = m21.midi.MidiFile()
+    midi_file.open(os.path.join("./app_data/", file.name))
+    midi_file.read()
+    midi_file.close()
+    str = midi.translate.midiFileToStream(midi_file)
+    for el in str.recurse():
+        print("abs")
+        if isinstance(el, tempo.MetronomeMark):
+            bpm = el
+            break
 
 
 #Fonction qui permet de charger le html du piano roll dans l'app streamlit
