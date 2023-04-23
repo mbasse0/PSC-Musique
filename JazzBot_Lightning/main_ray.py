@@ -39,6 +39,7 @@ def main(argv):
         train_dataloader, val_dataloader = get_two_dataloaders(input_vect, rep_vect, batch_size=config["batch_size"])
         
         if (int(argv[0]) == 1):
+            print("dddddddddp")
             trainer = pl.Trainer(max_epochs=num_epochs, gpus=num_gpus, strategy='ddp', accelerator='gpu', benchmark=True, progress_bar_refresh_rate=0, callbacks=[TuneReportCallback(metrics, on="validation_end")])
         else:
             trainer = pl.Trainer(max_epochs=num_epochs, gpus=num_gpus, accelerator='gpu', benchmark=True, progress_bar_refresh_rate=0, callbacks=[TuneReportCallback(metrics, on="validation_end")])
