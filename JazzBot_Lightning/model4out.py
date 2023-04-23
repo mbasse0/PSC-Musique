@@ -59,6 +59,8 @@ class Transformer4(pl.LightningModule):
         transformer_out = self.transformer(src, tgt, tgt_mask=tgt_mask, src_key_padding_mask=src_pad_mask, tgt_key_padding_mask=tgt_pad_mask)
         # Out size = (batch_size, sequence length, dim_model) 
 
+        a = -10000.0
+
         # Pour toutes les valeurs du batch size, on passe le résultat du transformer (de la taille de l'embeddding) dans la couche out adaptée afin d'obtenir un output final de la taille du vocab
         for d in range(len(prev_token)):
 
@@ -67,29 +69,29 @@ class Transformer4(pl.LightningModule):
             if type_tok =='n':      
                 out = self.out2(transformer_out) # out size = (batch_size,sequance length, d_toks)
                 before = torch.zeros((batch_size,seq_len,self.n_toks), device=self.device)
-                before = before.masked_fill(before == 0, float('-inf'))
+                before = before.masked_fill(before == 0, a)
                 after = torch.zeros((batch_size,seq_len,self.v_toks+self.t_toks), device=self.device)
-                after = after.masked_fill(after == 0, float('-inf'))
+                after = after.masked_fill(after == 0, a)
                 out = torch.cat((before,out,after),dim=2).to(self.device)
 
             elif type_tok=='d':
                 out = self.out3(transformer_out)
                 before = torch.zeros((batch_size,seq_len,self.n_toks+self.d_toks), device=self.device)
-                before = before.masked_fill(before == 0, float('-inf'))
+                before = before.masked_fill(before == 0, a)
                 after = torch.zeros((batch_size,seq_len,self.v_toks), device=self.device)
-                after = after.masked_fill(after == 0, float('-inf'))
+                after = after.masked_fill(after == 0, a)
                 out = torch.cat((before,out,after),dim=2).to(self.device)
 
             elif type_tok=='t':
                 out = self.out4(transformer_out)
                 before = torch.zeros((batch_size,seq_len,self.n_toks+self.d_toks+self.t_toks), device=self.device)
-                before = before.masked_fill(before == 0, float('-inf'))
+                before = before.masked_fill(before == 0, a)
                 out = torch.cat((before,out),dim=2).to(self.device)
 
             elif type_tok=='v':
                 out = self.out1(transformer_out)
                 after = torch.zeros((batch_size,seq_len,self.n_toks + self.d_toks + self.t_toks), device=self.device)
-                after = after.masked_fill(after == 0, float('-inf'))
+                after = after.masked_fill(after == 0, a)
                 out = torch.cat((out,after),dim=2).to(self.device)
 
         # out size : (batch_size,sequance length, num_toks)
