@@ -69,29 +69,29 @@ class Transformer4(pl.LightningModule):
                 if d%100 == 0:
                     print(out)
                 before = torch.zeros((batch_size,seq_len,self.n_toks), device=self.device)
-                before = before.masked_fill(before == 0, float('-inf'))
+                before = before.masked_fill(before == 0, float('-100'))
                 after = torch.zeros((batch_size,seq_len,self.v_toks+self.t_toks), device=self.device)
-                after = after.masked_fill(after == 0, float('-inf'))
+                after = after.masked_fill(after == 0, float('-100'))
                 out = torch.cat((before,out,after),dim=2).to(self.device)
 
             elif type_tok=='d':
                 out = self.out3(transformer_out)
                 before = torch.zeros((batch_size,seq_len,self.n_toks+self.d_toks), device=self.device)
-                before = before.masked_fill(before == 0, float('-inf'))
+                before = before.masked_fill(before == 0, float('-100'))
                 after = torch.zeros((batch_size,seq_len,self.v_toks), device=self.device)
-                after = after.masked_fill(after == 0, float('-inf'))
+                after = after.masked_fill(after == 0, float('-100'))
                 out = torch.cat((before,out,after),dim=2).to(self.device)
 
             elif type_tok=='t':
                 out = self.out4(transformer_out)
                 before = torch.zeros((batch_size,seq_len,self.n_toks+self.d_toks+self.t_toks), device=self.device)
-                before = before.masked_fill(before == 0, float('-inf'))
+                before = before.masked_fill(before == 0, float('-100'))
                 out = torch.cat((before,out),dim=2).to(self.device)
 
             elif type_tok=='v':
                 out = self.out1(transformer_out)
                 after = torch.zeros((batch_size,seq_len,self.n_toks + self.d_toks + self.t_toks), device=self.device)
-                after = after.masked_fill(after == 0, float('-inf'))
+                after = after.masked_fill(after == 0, float('-100'))
                 out = torch.cat((out,after),dim=2).to(self.device)
 
         # out size : (batch_size,sequance length, num_toks)
