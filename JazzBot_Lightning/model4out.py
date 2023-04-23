@@ -62,11 +62,11 @@ class Transformer4(pl.LightningModule):
         a = float('-inf')
 
         # Pour toutes les valeurs du batch size, on passe le résultat du transformer (de la taille de l'embeddding) dans la couche out adaptée afin d'obtenir un output final de la taille du vocab
-        for d in range(len(prev_token)):
 
-            type_tok = itos_vocab[prev_token[d]][0]
 
-            if type_tok =='n':      
+        type_tok = itos_vocab[prev_token[-1]][0]
+
+        if type_tok =='n':      
                 out = self.out2(transformer_out) # out size = (batch_size,sequance length, d_toks)
                 before = torch.zeros((batch_size,seq_len,self.n_toks), device=self.device)
                 before = before.masked_fill(before == 0, a)
@@ -74,7 +74,7 @@ class Transformer4(pl.LightningModule):
                 after = after.masked_fill(after == 0, a)
                 out = torch.cat((before,out,after),dim=2).to(self.device)
 
-            elif type_tok=='d':
+        elif type_tok=='d':
                 out = self.out3(transformer_out)
                 before = torch.zeros((batch_size,seq_len,self.n_toks+self.d_toks), device=self.device)
                 before = before.masked_fill(before == 0, a)
@@ -82,13 +82,13 @@ class Transformer4(pl.LightningModule):
                 after = after.masked_fill(after == 0, a)
                 out = torch.cat((before,out,after),dim=2).to(self.device)
 
-            elif type_tok=='t':
+        elif type_tok=='t':
                 out = self.out4(transformer_out)
                 before = torch.zeros((batch_size,seq_len,self.n_toks+self.d_toks+self.t_toks), device=self.device)
                 before = before.masked_fill(before == 0, a)
                 out = torch.cat((before,out),dim=2).to(self.device)
 
-            elif type_tok=='v':
+        elif type_tok=='v':
                 out = self.out1(transformer_out)
                 after = torch.zeros((batch_size,seq_len,self.n_toks + self.d_toks + self.t_toks), device=self.device)
                 after = after.masked_fill(after == 0, a)

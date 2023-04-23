@@ -58,16 +58,16 @@ class Transformer(pl.LightningModule):
         # Out size = (batch_size, sequence length, dim_model) 
 
         # Pour toutes les valeurs du batch size, on passe le résultat du transformer (de la taille de l'embeddding) dans la couche out adaptée afin d'obtenir un output final de la taille du vocab
-        for d in range(len(prev_token)):
-            type_tok = itos_vocab[prev_token[d]][0]
-            if type_tok =='n':
-                out = self.out1(transformer_out)
-            elif type_tok=='d':
-                out = self.out2(transformer_out)
-            elif type_tok=='t':
-                out = self.out3(transformer_out)
-            elif type_tok=='v':
-                out = self.out4(transformer_out)
+            
+        type_tok = itos_vocab[prev_token[-1]][0]
+        if type_tok =='n':
+            out = self.out1(transformer_out)
+        elif type_tok=='d':
+            out = self.out2(transformer_out)
+        elif type_tok=='t':
+            out = self.out3(transformer_out)
+        elif type_tok=='v':
+            out = self.out4(transformer_out)
         #outSize définie par la outSize de self.out1 (num_token)
         return out
 
