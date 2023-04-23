@@ -6,6 +6,7 @@ from csv_encoder import *
 
 from ray.tune.integration.pytorch_lightning import TuneReportCallback
 from ray import air, tune
+from ray.tune.schedulers import ASHAScheduler, PopulationBasedTraining
 import sys
 
 def main(argv):
