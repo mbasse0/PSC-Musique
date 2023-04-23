@@ -27,18 +27,17 @@ model = Transformer(num_tokens=len(custom_vocab), dim_model=512, num_heads=8, nu
 model.load_state_dict(state_dict)
 model.eval()
 
-<<<<<<< HEAD
+
 
 
 temp = st.slider("Température",min_value=0.5,max_value=1.5,value=1.0)
 bpm = 120
 maxl = st.slider("Nombre de notes à générer",min_value=1,max_value=200,value=25)
 maxl *=4
-=======
+
 file = st.file_uploader("Upload a MIDI file",type=['mid'])
 temp = st.slider("Temperature",min_value=0.5,max_value=1.5,value=1.0)
 maxl = st.slider("Maximum length of the generated sequence",min_value=20,max_value=400,value=100)
->>>>>>> c27279346397b94f9db584a97cf2b1953f0111d4
 generated = False
 
 
