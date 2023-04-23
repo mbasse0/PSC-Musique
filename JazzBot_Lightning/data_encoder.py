@@ -35,12 +35,11 @@ def chordToToken(chord, last_time):
 #############################################################################################################################################
 def midiToTokens(filename):
     '''
-    parameter : folder_path,f = name of the midi file
     read a midi file and return the first starting_tokens (until exception raised #1)
     '''
     tokens = []
     midi_file = midi.MidiFile()
-    midi_file.open(folder_path +f)
+    midi_file.open(filename)
     midi_file.read()
     midi_file.close()
     stream = midi.translate.midiFileToStream(midi_file)
