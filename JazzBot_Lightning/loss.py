@@ -196,6 +196,8 @@ class loss_4out(nn.Module):
         d = self.vocab_size[1]
         t = self.vocab_size[2]
         v = self.vocab_size[3]
+
+        print(output.shape)
         
         if output[0,0,0] != float('-inf'):
             loss = criterion(output[:,:,0:n].to(device),target[:,:,0:n].to(device))
