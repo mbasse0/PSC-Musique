@@ -19,7 +19,7 @@ from generate import *
 st.title("JazzBot")
 st.text("Use JazzBot to create a jazz solo")
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-state_dict = torch.load("./Models/model4out.pth",map_location=torch.device(device))
+state_dict = torch.load("./Models/model_10_deter_customloss_512_8_1_4_0.1_0.05.pth",map_location=torch.device(device))
 model = Transformer(num_tokens=len(custom_vocab), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=4, dropout_p=0.1, learning_rate=0.05).to(device)
 model.load_state_dict(state_dict)
 model.eval()
@@ -27,7 +27,7 @@ model.eval()
 file = st.file_uploader("Upload a MIDI file",type=['mid'])
 
 temp = st.slider("Temperature",min_value=0.5,max_value=1.5,value=1.0)
-bpm = st.slider("BPM",min_value=60,max_value=200,value=120)
+bpm = 120
 maxl = st.slider("Maximum length of the generated sequence",min_value=20,max_value=400,value=100)
 generated = False
 
@@ -71,7 +71,6 @@ def html_loader(midi_data=None, load_generated=False):
 progress_bar = st.progress(0)
 
 def progress_callback(progress):
-    print(progress)
     progress = min(progress, 1.0)
     progress_bar.progress(progress)
 
