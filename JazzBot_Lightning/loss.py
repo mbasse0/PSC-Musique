@@ -181,3 +181,30 @@ class harmonicLoss(nn.Module):
             return self.harmonic[5]
         else:
             return self.harmonic[6]
+
+class loss_4out(nn.Module):
+
+    def __init__(self,vocab_size_ = [NOTE_SIZE,DUR_SIZE,TIM_SIZE,VEL_SIZE]) -> None:
+        super().__init__()
+        self.vocab_size = vocab_size_
+
+    def forward(self, output, target):
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        criterion = nn.CrossEntropyLoss()
+
+        n = self.vocab_size[0]
+        d = self.vocab_size[1]
+        t = self.vocab_size[2]
+        v = self.vocab_size[3]
+        
+        if output[0,0,0] != float('-inf'):
+            loss = criterion(output[:,:,0:n].to(device),target[:,:,0:n].to(device))
+        elif output[0,0,n] != float('-inf'):
+            loss = criterion(output[:,:,n:n+d].to(device),target[:,:,n:n+d].to(device))
+        elif output[0,0,n+d] != float('-inf'):
+            loss = criterion(output[:,:,n+d:n+d+t].to(device),target[:,:,n+d:n+d+t].to(device))
+        elif output[0,0,n+d+t] != float('-inf'):
+            loss = criterion(output[:,:,n+d+t:n+d+t+v].to(device),target[:,:,n+d+t:n+d+t+v].to(device))
+
+        return loss
+
