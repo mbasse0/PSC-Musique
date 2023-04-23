@@ -39,7 +39,6 @@ def main(argv):
         train_dataloader, val_dataloader = get_two_dataloaders(input_vect, rep_vect, batch_size=config["batch_size"])
         
         if (int(argv[0]) == 1):
-            print("dddddddddp")
             trainer = pl.Trainer(max_epochs=num_epochs, gpus=num_gpus, strategy='ddp', accelerator='gpu', benchmark=True, progress_bar_refresh_rate=0, callbacks=[TuneReportCallback(metrics, on="validation_end")])
         else:
             trainer = pl.Trainer(max_epochs=num_epochs, gpus=num_gpus, benchmark=True, progress_bar_refresh_rate=0, callbacks=[TuneReportCallback(metrics, on="validation_end")])
@@ -64,7 +63,7 @@ def main(argv):
 
     scheduler = ASHAScheduler(
         max_t=num_epochs,
-        grace_period=3,
+        grace_period=4,
         reduction_factor=2)
     
     resources_per_trial = {"cpu": 1, "gpu": gpus_per_trial}
@@ -81,7 +80,7 @@ def main(argv):
             num_samples=num_samples,
         ),
         run_config=air.RunConfig(
-            name="tune_jazzbot",
+            name="tune_jazzbot_HPO1",
             local_dir="./results"
         ),
         param_space=config,
