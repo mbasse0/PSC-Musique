@@ -33,9 +33,22 @@ class tokenTypeLoss(nn.Module):
         loss = criterion(output.to(device), target.to(device)).to(device)
         batch_size = len(max_indices)
         mask = torch.Tensor((32, 120)).to(device)
-        for i in range(batch_size):
-            for j in range(len(max_indices[0])):
-                mask[i,j] = float(itos_vocab[max_indices[i,j]][0] != itos_vocab[target[i,j]][0])
+
+        # Assuming you have itos_vocab, max_indices, and target tensors
+
+        # 1. Convert the itos_vocab list into a tensor
+        itos_vocab_tensor = torch.tensor(list(itos_vocab), dtype=torch.int)
+
+        # 2. Use tensor indexing to get the first character of each string for max_indices and target tensors
+        max_indices_chars = itos_vocab_tensor[max_indices]
+        target_chars = itos_vocab_tensor[target]
+
+        # 3. Perform an element-wise comparison between max_indices_chars and target_chars
+        mask = (max_indices_chars != target_chars).float().to(device)
+
+        # for i in range(batch_size):
+        #     for j in range(len(max_indices[0])):
+        #         mask[i,j] = float(itos_vocab[max_indices[i,j]][0] != itos_vocab[target[i,j]][0])
         high_cost = self.weight * (loss * mask.float()).mean()
         # return loss, pct_err
         return loss + high_cost
