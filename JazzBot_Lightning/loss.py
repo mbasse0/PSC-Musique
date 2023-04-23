@@ -189,6 +189,10 @@ class loss_4out(nn.Module):
         self.vocab_size = vocab_size_
 
     def forward(self, output, target):
+        """
+        output_size = batch_size * vocab_size * sequence_length
+        target_size = batch_size * sequence_length
+        """
         device = "cuda" if torch.cuda.is_available() else "cpu"
         criterion = nn.CrossEntropyLoss()
 
@@ -196,19 +200,15 @@ class loss_4out(nn.Module):
         d = self.vocab_size[1]
         t = self.vocab_size[2]
         v = self.vocab_size[3]
-        print('o')
-        print(output.shape)
-        print('t')
-        print(target.shape)
         
         if output[0,0,0] != float('-inf'):
-            loss = criterion(output[:,0:n,:].to(device),target[:,0:n,:].to(device))
+            loss = criterion(output[:,0:n,:].to(device),target.to(device)).to(device)
         elif output[0,n,0] != float('-inf'):
-            loss = criterion(output[:,n:n+d,:].to(device),target[:,n:n+d,:].to(device))
+            loss = criterion(output[:,n:n+d,:].to(device),target.to(device)).to(device)
         elif output[0,n+d,0] != float('-inf'):
-            loss = criterion(output[:,n+d:n+d+t,:].to(device),target[:,n+d:n+d+t,:].to(device))
+            loss = criterion(output[:,n+d:n+d+t,:].to(device),target.to(device)).to(device)
         elif output[0,n+d+t,0] != float('-inf'):
-            loss = criterion(output[:,n+d+t:n+d+t+v,:].to(device),target[:,n+d+t:n+d+t+v,:].to(device))
+            loss = criterion(output[:,n+d+t:n+d+t+v,:].to(device),target.to(device)).to(device)
 
         return loss
 
