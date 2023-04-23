@@ -200,13 +200,13 @@ class loss_4out(nn.Module):
         print(output.shape)
         
         if output[0,0,0] != float('-inf'):
-            loss = criterion(output[:,:,0:n].to(device),target[:,:,0:n].to(device))
-        elif output[0,0,n] != float('-inf'):
-            loss = criterion(output[:,:,n:n+d].to(device),target[:,:,n:n+d].to(device))
-        elif output[0,0,n+d] != float('-inf'):
-            loss = criterion(output[:,:,n+d:n+d+t].to(device),target[:,:,n+d:n+d+t].to(device))
-        elif output[0,0,n+d+t] != float('-inf'):
-            loss = criterion(output[:,:,n+d+t:n+d+t+v].to(device),target[:,:,n+d+t:n+d+t+v].to(device))
+            loss = criterion(output[:,0:n,:].to(device),target[:,0:n,:].to(device))
+        elif output[0,n,0] != float('-inf'):
+            loss = criterion(output[:,n:n+d,:].to(device),target[:,n:n+d,:].to(device))
+        elif output[0,n+d,0] != float('-inf'):
+            loss = criterion(output[:,n+d:n+d+t,:].to(device),target[:,n+d:n+d+t,:].to(device))
+        elif output[0,n+d+t,0] != float('-inf'):
+            loss = criterion(output[:,n+d+t:n+d+t+v,:].to(device),target[:,n+d+t:n+d+t+v,:].to(device))
 
         return loss
 
