@@ -31,12 +31,10 @@ class tokenTypeLoss(nn.Module):
         # print("max ind", max_indices, max_indices.shape)
 
         loss = criterion(output.to(device), target.to(device)).to(device)
-        batch_size = len(max_indices)
-        mask = torch.Tensor((32, 120)).to(device)
 
         # Assuming you have itos_vocab, max_indices, and target tensors
 
-       # Assuming you have itos_vocab, max_indices, and target tensors
+        # Assuming you have itos_vocab, max_indices, and target tensors
 
         # 1. Convert the first character of each string in itos_vocab to its Unicode code point
         itos_vocab_code_points = [ord(s[0]) for s in itos_vocab]
@@ -125,11 +123,9 @@ class harmonicLoss(nn.Module):
 
     def __init__(self,coeff_,harmonic_) -> None:
         """
-        coeff_ : float[4] :
+        coeff_ : float[2] :
             0 : weigh of token type error penalization
-            1 : weigh of duration penalization
-            2 : weigh of time penalization
-            3 : weigh of velocity penalization
+            1 : weigh of other penalization
         harmonic_ : float[] :
             0 : weigh of the fifth
             1 : weigh of the fourth
@@ -159,19 +155,28 @@ class harmonicLoss(nn.Module):
         batch_size = len(max_indices)
         mask = torch.zeros((batch_size, sequence_length)).to(device)
 
-        for i in range(batch_size):
-            for j in range(sequence_length):
-                if itos_vocab[max_indices[i][j]][0] != itos_vocab[target[i][j]][0]:
-                    mask[i][j] = self.coef[0]
-                else:
-                    if itos_vocab[max_indices[i][j]][0] == 'p':
-                        mask[i][j] = self.harmonicWeigh(int(itos_vocab[max_indices[i][j]][1:]),int(itos_vocab[target[i][j]][1:]))
-                    elif itos_vocab[max_indices[i][j]][0] == 'd':
-                        mask[i][j] = self.coef[1] * np.abs((float(itos_vocab[max_indices[i][j]][1:]) - float(itos_vocab[target[i][j]][1:])))/160
-                    elif itos_vocab[max_indices[i][j]][0] == 't':
-                        mask[i][j] = self.coef[2] * np.abs((float(itos_vocab[max_indices[i][j]][1:]) - float(itos_vocab[target[i][j]][1:])))/100
-                    else:
-                        mask[i][j] = self.coef[3] * np.abs((float(itos_vocab[max_indices[i][j]][1:]) - float(itos_vocab[target[i][j]][1:])))/128
+        # 1. Convert the first character of each string in itos_vocab to its Unicode code point
+        itos_vocab_code_points = [ord(s[0]) for s in itos_vocab]
+
+
+        # 2. Convert the list of Unicode code points into a tensor
+        itos_vocab_tensor = torch.tensor(itos_vocab_code_points, dtype=torch.int)
+
+        values_tensor = torch.tensor([int(s[1:]) for s in itos_vocab], dtype=torch.int)
+
+        # 3. Use tensor indexing to get the first character of each string for max_indices and target tensors
+        max_indices_chars = itos_vocab_tensor[max_indices]
+        target_chars = itos_vocab_tensor[target]
+
+        max_indices_values = values_tensor[max_indices]
+        target_values = values_tensor[target]
+
+        # 4. Perform an element-wise comparison between max_indices_chars and target_chars
+        mask = (max_indices_chars != target_chars).float().to(device)
+        diff = max_indices_values - target_values
+        dist = (diff*diff).float().to(device)
+
+        high_cost = self.coef[0] * (loss * mask.float()).mean() + self.coef[1] * (loss * (dist * mask)).mean()
 
         high_cost = (loss * mask.float()).mean()
         pct_err = mask.float().mean().item()
