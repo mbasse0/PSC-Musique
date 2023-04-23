@@ -22,20 +22,20 @@ class tokenTypeLoss(nn.Module):
         # target = torch.LongTensor(target).to(device)
         criterion = nn.CrossEntropyLoss()
         # print("output", output, output.shape)
-        print("target", target, target.shape)
+        # print("target", target, target.shape)
 
         softmax_output = F.softmax(output, dim=-1)
 
         max_indices = torch.argmax(softmax_output, dim=1)
         # print("soft output", softmax_output, softmax_output.shape)
-        print("max ind", max_indices, max_indices.shape)
+        # print("max ind", max_indices, max_indices.shape)
 
         loss = criterion(output.to(device), target.to(device)).to(device)
         batch_size = len(max_indices)
         mask = torch.Tensor((32, 120)).to(device)
         for i in range(batch_size):
             for j in range(len(max_indices[0])):
-                mask[i][j] = (itos_vocab[max_indices[i][j]][0] != itos_vocab[target[i][j]][0])
+                mask[i][j] = float(itos_vocab[max_indices[i][j]][0] != itos_vocab[target[i][j]][0])
         high_cost = self.weight * (loss * mask.float()).mean()
         # return loss, pct_err
         return loss + high_cost
