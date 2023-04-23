@@ -80,7 +80,7 @@ def main(argv):
             num_samples=num_samples,
         ),
         run_config=air.RunConfig(
-            name="tune_jazzbot_HPO1",
+            name="tune_jazzbot_HPO2",
             local_dir="./results"
         ),
         param_space=config,
