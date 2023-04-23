@@ -43,7 +43,6 @@ if file is not None:
     midi_file.close()
     str = midi.translate.midiFileToStream(midi_file)
     for el in str.recurse():
-        print("abs")
         if isinstance(el, tempo.MetronomeMark):
             bpm = el
             break
