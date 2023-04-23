@@ -5,7 +5,8 @@ import pytorch_lightning as pl
 from csv_encoder import *
 
 from ray.tune.integration.pytorch_lightning import TuneReportCallback
-from ray import tune
+from ray import air, tune
+from ray.tune.schedulers import ASHAScheduler, PopulationBasedTraining
 import sys
 
 def main(argv):
@@ -18,6 +19,7 @@ def main(argv):
     arg0 : 0 : noDDP , 1 : DDP
     arg1 : nb_epochs
     arg2 : dataset_name
+    arg3 : number of hyperparameter samples
     
     """
     dataset_path = "./Datasets/" + argv[2]
@@ -43,7 +45,7 @@ def main(argv):
     
         trainer.fit(model, train_dataloader, val_dataloader)
   
-    num_samples = 10
+    num_samples = int(argv[3])
     num_epochs = int(argv[1])
     gpus_per_trial = 3 if (int(argv[0]) == 1) else 1
     metrics = {"loss": "ptl/val_loss"}
@@ -59,19 +61,32 @@ def main(argv):
         num_epochs=num_epochs,
         num_gpus=gpus_per_trial)
 
-    analysis = tune.run(
-        trainable,
-        resources_per_trial={
-            "cpu": 1,
-            "gpu": gpus_per_trial
-        },
-        metric="loss",
-        mode="min",
-        config=config,
-        num_samples=num_samples,
-        name="tune_jazzbot")
+    scheduler = ASHAScheduler(
+        max_t=num_epochs,
+        grace_period=1,
+        reduction_factor=2)
+    
+    resources_per_trial = {"cpu": 1, "gpu": gpus_per_trial}
+    
+    tuner = tune.Tuner(
+        tune.with_resources(
+            trainable,
+            resources=resources_per_trial
+        ),
+        tune_config=tune.TuneConfig(
+            metric="loss",
+            mode="min",
+            scheduler=scheduler,
+            num_samples=num_samples,
+        ),
+        run_config=air.RunConfig(
+            name="tune_jazzbot",
+        ),
+        param_space=config,
+    )
+    results = tuner.fit()
 
-    print(analysis.best_config)
+    print("Best hyperparameters found were: ", results.get_best_result().config)
 
 
 if __name__=="__main__":
