@@ -3,6 +3,7 @@ from model4out import *
 from dataset import *
 import pytorch_lightning as pl
 from csv_encoder import *
+import math
 
 from ray.tune.integration.pytorch_lightning import TuneReportCallback
 from ray import air, tune
@@ -68,6 +69,9 @@ def main(argv):
 
     resources_per_trial = {"cpu": 1, "gpu": gpus_per_trial}
     
+    def stopper(trial_id, result):
+        return math.isnan(result["loss"])
+
     tuner = tune.Tuner(
         tune.with_resources(
             trainable,
@@ -82,7 +86,7 @@ def main(argv):
         run_config=air.RunConfig(
             name="tune_jazzbot_HPO3",
             local_dir="./results",
-            stop={"loss": nan}
+            stop=stopper
         ),
         param_space=config,
     )
