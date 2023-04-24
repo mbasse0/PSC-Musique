@@ -65,7 +65,7 @@ def main(argv):
         max_t=num_epochs,
         grace_period=5,
         reduction_factor=3)
-    
+
     resources_per_trial = {"cpu": 1, "gpu": gpus_per_trial}
     
     tuner = tune.Tuner(
@@ -81,7 +81,8 @@ def main(argv):
         ),
         run_config=air.RunConfig(
             name="tune_jazzbot_HPO3",
-            local_dir="./results"
+            local_dir="./results",
+            stop={"loss": nan}
         ),
         param_space=config,
     )
