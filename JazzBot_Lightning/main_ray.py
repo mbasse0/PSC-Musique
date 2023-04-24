@@ -53,8 +53,8 @@ def main(argv):
     metrics = {"loss": "ptl/val_loss"}
         
     config = {
-        "lr": tune.loguniform(0.05, 0.2),
-        "batch_size": tune.choice([12, 24]),
+        "lr": tune.loguniform(0.04, 0.3),
+        "batch_size": tune.choice([12, 48]),
     }
 
     trainable = tune.with_parameters(

@@ -88,11 +88,11 @@ def main(argv):
       decoded_tokens = [itos_vocab[el] for el in generated_tokens]
       print(decoded_tokens)
 
-   # ## CONVERSION DE LA SEQUENCE EN MIDI
+      # ## CONVERSION DE LA SEQUENCE EN MIDI
 
-   tokens_to_midi(decoded_tokens, "midi3.mid", 100)
-   # # tokens_to_midi([itos_vocab[el]for el in input_vect[10]], "midi_dataset.mid", 120)
-   # # tokens_to_midi([itos_vocab[el]for el in input_vect[10]], "midi_dataset_GM.mid", 120)
+      tokens_to_midi(decoded_tokens, "midi3.mid", 100)
+      # # tokens_to_midi([itos_vocab[el]for el in input_vect[10]], "midi_dataset.mid", 120)
+      # # tokens_to_midi([itos_vocab[el]for el in input_vect[10]], "midi_dataset_GM.mid", 120)
 
 if __name__=="__main__":
    main(sys.argv[1:])
