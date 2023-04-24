@@ -52,7 +52,7 @@ def main(argv):
     metrics = {"loss": "ptl/val_loss"}
         
     config = {
-        "lr": tune.loguniform(1e-2, 0.3),
+        "lr": tune.loguniform(1e-1, 0.3),
         "batch_size": tune.choice([8, 16, 32]),
     }
 
