@@ -51,8 +51,8 @@ def main(argv):
     metrics = {"loss": "ptl/val_loss"}
         
     config = {
-        "lr": tune.loguniform(1e-3, 1e-1),
-        "batch_size": tune.choice([8, 16, 32, 64]),
+        "lr": tune.loguniform(1e-2, 1e-1),
+        "batch_size": tune.choice([8, 16, 32]),
     }
 
     trainable = tune.with_parameters(
@@ -80,7 +80,7 @@ def main(argv):
             num_samples=num_samples,
         ),
         run_config=air.RunConfig(
-            name="tune_jazzbot_HPO2",
+            name="tune_jazzbot_HPO3",
             local_dir="./results"
         ),
         param_space=config,
