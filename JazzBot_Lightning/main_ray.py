@@ -21,6 +21,7 @@ def main(argv):
     arg1 : nb_epochs
     arg2 : dataset_name
     arg3 : number of hyperparameter samples
+    arg4 : experiment_name
     
     """
     dataset_path = "./Datasets/" + argv[2]
@@ -84,7 +85,7 @@ def main(argv):
             num_samples=num_samples,
         ),
         run_config=air.RunConfig(
-            name="tune_jazzbot_HPO3",
+            name=argv[4],
             local_dir="./results",
             stop=stopper
         ),

@@ -30,8 +30,8 @@ def main(argv):
    """
 
    if argv[0] == "train":
-      ## ENTRAINEMENT
-      batch_size = 16
+      ## ENTRAINEMENT avec les parametres optimaux (loss < 0.2 au bout de 20epoch)
+      batch_size = 8
 
       nb_epochs = int(argv[4])
 
@@ -41,7 +41,7 @@ def main(argv):
 
       if int(argv[2]) == 1:
          model = Transformer4(
-            dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1, learning_rate = 0.03
+            dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1, learning_rate = 0.0475
          )
       else:
          model = Transformer(
