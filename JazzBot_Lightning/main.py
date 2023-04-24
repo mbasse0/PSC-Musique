@@ -31,7 +31,7 @@ def main(argv):
 
    if argv[0] == "train":
       ## ENTRAINEMENT avec les parametres optimaux (loss < 0.2 au bout de 20epoch)
-      batch_size = 8
+      batch_size = 4
 
       nb_epochs = int(argv[4])
 
@@ -45,7 +45,7 @@ def main(argv):
          )
       else:
          model = Transformer(
-            num_tokens=len(custom_vocab), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=4, dropout_p=0.1, learning_rate= 0.07
+            num_tokens=len(custom_vocab), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=4, dropout_p=0.1, learning_rate= 0.15
          )
 
       logger = pl.loggers.TensorBoardLogger(save_dir='.')
