@@ -38,7 +38,7 @@ def generate_sequence(model, start_tokens, max_length=100, temperature=1.0, prog
             
                 progress_callback(i / N)
 
-    # print([itos_vocab[el] for el in les_genere])
+    print([itos_vocab[el] for el in les_genere])
     return les_tokens
 
 

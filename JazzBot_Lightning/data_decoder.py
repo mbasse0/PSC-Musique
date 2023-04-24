@@ -73,7 +73,13 @@ def tokens_to_midi(token_array, filename, bpm):
     # Convert the token array to a music21 Stream
     stream = tokens_to_stream(token_array)
     # Set the BPM
-    stream.insert(0, bpm)
+
+    if isinstance(bpm, int): 
+        # Convert BPM to music21 object
+        mm = music21.tempo.MetronomeMark(number=bpm)
+    else:
+        mm = bpm
+    stream.insert(0, mm)
 
     # Create a MIDI file from the Stream and save it
     midi_file = music21.midi.translate.streamToMidiFile(stream)
