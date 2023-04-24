@@ -63,7 +63,7 @@ def main(argv):
 
     scheduler = ASHAScheduler(
         max_t=num_epochs,
-        grace_period=4,
+        grace_period=5,
         reduction_factor=2)
     
     resources_per_trial = {"cpu": 1, "gpu": gpus_per_trial}
