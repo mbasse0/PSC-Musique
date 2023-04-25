@@ -28,7 +28,6 @@ def main(argv):
     input_vect, rep_vect = tokensFileToVectInputTarget(dataset_path,120)
 
     def train_jazzbot(config, data_dir=None, num_epochs=1, num_gpus=1):
-        print(result)
         model = Transformer(
             num_tokens=len(custom_vocab), 
             dim_model=512, 
@@ -72,7 +71,7 @@ def main(argv):
     resources_per_trial = {"cpu": 1, "gpu": gpus_per_trial}
     
     def stopper(trial_id, result):
-        return math.isnan(result["loss"]) or ("epoch" in result) or ("iter" in result)
+        return math.isnan(result["loss"]) or ("training_iteration" in result) or ("training_iter" in result)
 
     tuner = tune.Tuner(
         tune.with_resources(
