@@ -54,7 +54,7 @@ def main(argv):
         
     config = {
         "lr": tune.loguniform(0.04, 0.2),
-        "batch_size": tune.choice([12, 24]),
+        "batch_size": tune.choice([12]),
     }
 
     trainable = tune.with_parameters(
