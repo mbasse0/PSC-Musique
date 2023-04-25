@@ -71,7 +71,7 @@ def main(argv):
     resources_per_trial = {"cpu": 1, "gpu": gpus_per_trial}
     
     def stopper(trial_id, result):
-        return math.isnan(result["loss"]) or ("training_iteration" in result)
+        return math.isnan(result["loss"]) or (result["training_iteration"] == 2 and result["loss"] > 8)
 
     tuner = tune.Tuner(
         tune.with_resources(
