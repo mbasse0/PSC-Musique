@@ -28,6 +28,7 @@ def main(argv):
     input_vect, rep_vect = tokensFileToVectInputTarget(dataset_path,120)
 
     def train_jazzbot(config, data_dir=None, num_epochs=1, num_gpus=1):
+        print(result)
         model = Transformer(
             num_tokens=len(custom_vocab), 
             dim_model=512, 
