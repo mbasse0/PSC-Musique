@@ -52,7 +52,7 @@ def main(argv):
       if argv[0] == "fine_tune":
          model.load_state_dict(torch.load("./Models/" + argv[1]))
 
-      #logger = pl.loggers.TensorBoardLogger(save_dir='./fine_tune')
+      logger = pl.loggers.TensorBoardLogger(save_dir='./fine_tune')
 
       if int(argv[3]) == 1:
          trainer = pl.Trainer(accelerator='gpu', gpus=3, strategy='ddp', max_epochs=nb_epochs, log_every_n_steps=20, benchmark=True, logger=logger)
