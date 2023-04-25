@@ -14,8 +14,8 @@ import sys
 
 def main(argv):
    """
-   arg0 : "train" : entraîner , "gen" : génére
-   arg1 : model_name
+   arg0 : "train" : entraîner , "gen" : génére, "fine_tune" : fine tuner
+   arg1 : model_name (to create if "train" and to fine tune if "fine_tune")
    arg2 : 0 : model , 1 : model4out
 
    (arguments uniquement valables pour "train")
@@ -29,7 +29,7 @@ def main(argv):
    arg5 : temperature (optionnel)
    """
 
-   if argv[0] == "train":
+   if argv[0] == "train" or argv[0] == "fine_tune" :
       ## ENTRAINEMENT avec les parametres optimaux (loss < 0.2 au bout de 20epoch)
       batch_size = 4
 
@@ -38,7 +38,7 @@ def main(argv):
       dataset_path = "./Datasets/" + argv[5]
       input_vect, rep_vect = tokensFileToVectInputTarget(dataset_path,120)
       train_dataloader, val_dataloader = get_two_dataloaders(input_vect, rep_vect, batch_size)
-
+   
       if int(argv[2]) == 1:
          model = Transformer4(
             dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1, learning_rate = 0.0475
@@ -47,6 +47,10 @@ def main(argv):
          model = Transformer(
             num_tokens=len(custom_vocab), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=4, dropout_p=0.1, learning_rate= 0.1
          )
+
+      # for fine tuning, load the pretrained model
+      if argv[0] == "fine_tune":
+         model.load_state_dict(torch.load("./Models/" + argv[1]))
 
       logger = pl.loggers.TensorBoardLogger(save_dir='.')
 
@@ -57,9 +61,11 @@ def main(argv):
 
       trainer.fit(model, train_dataloader, val_dataloader)
 
-      model_path = "./Models/" + argv[1]
+      model_path = "./Models/" + argv[1] + ("" if argv[0] == "train" else "_fine_tune_on" + argv[5])
       torch.save(model.state_dict(), model_path)
    
+
+
    elif argv[0] == "gen":
       ## GENERATION
       if len(argv) == 4:
