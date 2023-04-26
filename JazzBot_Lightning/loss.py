@@ -146,32 +146,19 @@ class harmonicLoss(nn.Module):
         device = "cuda" if torch.cuda.is_available() else "cpu"
         criterion = nn.CrossEntropyLoss()
         softmax_output = F.softmax(output, dim=-1)
-
-        batch_size, sequence_length = target.shape
-
         max_indices = torch.argmax(softmax_output, dim=1)
 
         loss = criterion(output.to(device), target.to(device)).to(device)
-        batch_size = len(max_indices)
-        mask = torch.zeros((batch_size, sequence_length)).to(device)
 
-        # 1. Convert the first character of each string in itos_vocab to its Unicode code point
         itos_vocab_code_points = [ord(s[0]) for s in itos_vocab]
-
-
-        # 2. Convert the list of Unicode code points into a tensor
         itos_vocab_tensor = torch.tensor(itos_vocab_code_points, dtype=torch.int)
-
         values_tensor = torch.tensor([int(s[1:]) for s in itos_vocab], dtype=torch.int)
 
-        # 3. Use tensor indexing to get the first character of each string for max_indices and target tensors
         max_indices_chars = itos_vocab_tensor[max_indices]
         target_chars = itos_vocab_tensor[target]
-
         max_indices_values = values_tensor[max_indices]
         target_values = values_tensor[target]
 
-        # 4. Perform an element-wise comparison between max_indices_chars and target_chars
         mask = (max_indices_chars != target_chars).float().to(device)
         diff = max_indices_values - target_values
         dist = (diff*diff).float().to(device)
