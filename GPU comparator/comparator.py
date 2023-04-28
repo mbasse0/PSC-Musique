@@ -3,11 +3,12 @@ import time
 
 t_0 = time.time()
 device = "cuda" if torch.cuda.is_available() else "cpu"
-N = 100000
+N = 100
+k = 10000
 
-sum = torch.ones(size = (100,100), device=device)
+sum = torch.ones(size = (k,k), device=device)
 
 for _ in range(N):
-    sum += torch.add(torch.ones(size = (100,100), device=device),sum)
+    sum = torch.add(torch.ones(size = (k,k), device=device),sum)
 
 print(time.time() -t_0)
