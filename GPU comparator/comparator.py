@@ -3,7 +3,7 @@ import time
 
 t_0 = time.time()
 device = "cuda" if torch.cuda.is_available() else "cpu"
-print("device")
+print(device)
 N = 100000
 k = 100
 
