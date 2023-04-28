@@ -4,8 +4,8 @@ import time
 t_0 = time.time()
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print(device)
-N = 100000
-k = 100
+N = 10
+k = 100000
 
 sum = torch.ones(size = (k,k), device=device)
 
