@@ -8,6 +8,6 @@ N = 100000
 sum = torch.ones(size = (100,100), device=device)
 
 for _ in range(N):
-    sum += torch.ones(size = (100,100), device=device)
+    sum += torch.add(torch.ones(size = (100,100), device=device),sum)
 
 print(time.time() -t_0)
