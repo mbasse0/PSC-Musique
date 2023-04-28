@@ -22,10 +22,10 @@ st.set_page_config(
 st.title("JazzBot")
 st.text("Générer un solo de Jazz à partir d'un fichier MIDI")
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-state_dict = torch.load("./Models/model_10_deter_CustomLoss_512_8_1_4_0.1_0.05.pth",map_location=torch.device(device))
-model = Transformer(num_tokens=len(custom_vocab), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=4, dropout_p=0.1, learning_rate=0.05).to(device)
-model.load_state_dict(state_dict)
-model.eval()
+state_dict = torch.load("./Models/model_10_deter_defaultloss_512_8_1_4_0.1_0.05.pth",map_location=torch.device(device))
+#model = Transformer(num_tokens=len(custom_vocab), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=4, dropout_p=0.1, learning_rate=0.05).to(device)
+#model.load_state_dict(state_dict)
+#model.eval()
 
 
 
