@@ -1,15 +1,15 @@
 # Pistes d'amélioration
-- Mettre à jour l'app
+- Mettre à jour l'app (ou plutot s'assurer que le BR peut la mettre à jour le weekend pro) MAX
 - Avoir un rendu musical meilleur :
-   - accords ?
-   - Giant midi + nouvelle loss ?
-   - bon sf2 (un peu jazzy)
-   - meilleur fine tune en option sur l'app
+   - accords ? PIERRE(pour que l'app mette des accords choisis ? Inférés ? En entrée d'encoder ?)
+   - Giant midi + nouvelle loss ? LEO(GM) + PIERRE(Harmo) + Henri(Training)
+   - bon sf2 (un peu jazzy) MAX 
+   - meilleur fine tune en option sur l'app HENRI(training) + MAX(connecter l'app à deux modèles)
 - Avoir un meilleur rendu à l'oral
-   - API clavier
-   - travail théorique sur nos parties
-   - préparation de la présentation
-   - travail sur le mood / le ton / le langage
+   - API clavier LEO? MAX(déja beaucoup à faire)?
+   - travail théorique sur nos parties TOUT LE MONDE
+   - préparation de la présentation MERCREDI 
+   - travail sur le mood / le ton / le langage MERCREDI
    
 
 
