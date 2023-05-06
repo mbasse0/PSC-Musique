@@ -41,11 +41,11 @@ def main(argv):
    
       if int(argv[2]) == 1:
          model = Transformer4(
-            dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1, learning_rate = 0.0475
+            dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=4, dropout_p=0.1, learning_rate = 0.05
          )
       else:
          model = Transformer(
-            num_tokens=len(custom_vocab), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=4, dropout_p=0.1, learning_rate= 0.02
+            num_tokens=len(custom_vocab), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=4, dropout_p=0.1, learning_rate= 0.05
          )
 
       # for fine tuning, load the pretrained model
@@ -78,7 +78,7 @@ def main(argv):
 
       if int(argv[2]) == 1:
          model = Transformer4(
-            dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=6, dropout_p=0.1, learning_rate = 0.01
+            dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=4, dropout_p=0.1, learning_rate = 0.05
          )
       else:
          model = Transformer(
