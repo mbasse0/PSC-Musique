@@ -1,11 +1,16 @@
 # Pistes d'amélioration
-- Sorties déterministes + loss adaptées (Pierre)
-- Logbaord (Soto ?) fait Henri
-- Hébergement de l'app (max en cours)
-- Database (Léonard)
-- Accords en encoder (Max)
-- Comprendre pourquoi 120 ? (Max et Henri)
-- Etude mapématique (avec sortie deterministe + validation step + logboard + calcul + database  au moins) lancer plusieurs simu avec un panel de paramètres pour prendre experimentalement la meilleure (en faisant varier batchsize, lr et peut être l'optimiseur)
+- Mettre à jour l'app
+- Avoir un rendu musical meilleur :
+   - accords ?
+   - Giant midi + nouvelle loss ?
+   - bon sf2 (un peu jazzy)
+   - meilleur fine tune en option sur l'app
+- Avoir un meilleur rendu à l'oral
+   - API clavier
+   - travail théorique sur nos parties
+   - préparation de la présentation
+   - travail sur le mood / le ton / le langage
+   
 
 
 
