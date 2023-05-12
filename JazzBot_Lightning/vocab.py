@@ -5,8 +5,8 @@ from collections import OrderedDict
 
 
 NOTE_SIZE = 128
-DUR_SIZE = 96
-TIM_SIZE = 192
+DUR_SIZE = 48
+TIM_SIZE = 72
 VEL_SIZE = 128
 
 
