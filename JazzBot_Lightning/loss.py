@@ -147,7 +147,7 @@ class harmonicLoss(nn.Module):
         target_values = values_tensor[target]
 
         mask = (max_indices_chars != target_chars).float().to(device)
-        diff = np.abs(max_indices_values - target_values)
+        diff = torch.abs(max_indices_values - target_values)
         dist = (diff).float().to(device)
 
         high_cost = self.coef[0] * (loss * mask.float()).mean() + self.coef[1] * (loss * (dist * mask)).mean()
