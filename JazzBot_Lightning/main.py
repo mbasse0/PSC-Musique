@@ -45,7 +45,7 @@ def main(argv):
          )
       else:
          model = Transformer(
-            num_tokens=len(custom_vocab), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=4, dropout_p=0.1, learning_rate= 0.05
+            num_tokens=len(custom_vocab), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=4, dropout_p=0.1, learning_rate= 0.00001
          )
 
       # for fine tuning, load the pretrained model
