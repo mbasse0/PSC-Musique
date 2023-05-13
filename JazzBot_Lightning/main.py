@@ -25,8 +25,9 @@ def main(argv):
 
    (arguments uniquement valables pour "gen")
    arg3 : nb_generated_tokens
-   arg4 : start_midi_name (optionnel)
-   arg5 : temperature (optionnel)
+   arg4 : temperature
+   arg5 : start_midi_name (optionnel)
+   
    """
 
    if argv[0] == "train" or argv[0] == "fine_tune" :
@@ -68,13 +69,13 @@ def main(argv):
 
    elif argv[0] == "gen":
       ## GENERATION
-      if len(argv) == 4:
+      if len(argv) == 5:
          start_tokens = [custom_vocab["n60"], custom_vocab["d1"], custom_vocab["t1"], custom_vocab["v64"]]
-         temp = 0.2
+         temp = float(argv[4])
       else:
-         midi_path = "./Midis/" + argv[4]
+         midi_path = "./Midis/" + argv[5]
          start_tokens = midiToTokens(midi_path)
-         temp = float(argv[5])
+         
 
       if int(argv[2]) == 1:
          model = Transformer4(
@@ -96,7 +97,7 @@ def main(argv):
 
       # ## CONVERSION DE LA SEQUENCE EN MIDI
 
-      tokens_to_midi(decoded_tokens, "midi3.mid", 100)
+      tokens_to_midi(decoded_tokens, "midis/" + argv[1] + "temp" + argv[4] + .mid", 100)
       # # tokens_to_midi([itos_vocab[el]for el in input_vect[10]], "midi_dataset.mid", 120)
       # # tokens_to_midi([itos_vocab[el]for el in input_vect[10]], "midi_dataset_GM.mid", 120)
 
