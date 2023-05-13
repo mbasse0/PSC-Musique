@@ -70,7 +70,7 @@ def main(argv):
       ## GENERATION
       if len(argv) == 4:
          start_tokens = [custom_vocab["n60"], custom_vocab["d1"], custom_vocab["t1"], custom_vocab["v64"]]
-         temp = 1.0
+         temp = 0.2
       else:
          midi_path = "./Midis/" + argv[4]
          start_tokens = midiToTokens(midi_path)
