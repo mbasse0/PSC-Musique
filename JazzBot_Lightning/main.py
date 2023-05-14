@@ -70,7 +70,7 @@ def main(argv):
    elif argv[0] == "gen":
       ## GENERATION
       if len(argv) == 5:
-         start_tokens = [custom_vocab["n60"], custom_vocab["d1"], custom_vocab["t1"], custom_vocab["v64"]]
+         start_tokens = [custom_vocab["n60"], custom_vocab["d4"], custom_vocab["t1"], custom_vocab["v64"], custom_vocab["n63"], custom_vocab["d1"], custom_vocab["t5"], custom_vocab["v56"], custom_vocab["n65"], custom_vocab["d3"], custom_vocab["t6"], custom_vocab["v64"]]
          temp = float(argv[4])
       else:
          midi_path = "./Midis/" + argv[5]
