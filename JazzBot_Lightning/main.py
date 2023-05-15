@@ -62,7 +62,7 @@ def main(argv):
 
       trainer.fit(model, train_dataloader, val_dataloader)
 
-      model_path = "./Models/" + argv[1] + ("" if argv[0] == "train" else "_fine_tune_on" + argv[5])
+      model_path = "./Models/" + argv[1] + ("" if argv[0] == "train" else "_fine_tune_" + argv[5] + "tokenlossfinetune")
       torch.save(model.state_dict(), model_path)
    
 
