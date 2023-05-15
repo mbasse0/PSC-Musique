@@ -97,8 +97,9 @@ class Transformer(pl.LightningModule):
     
     def configure_optimizers(self):
         optimizer = torch.optim.SGD(self.parameters(), lr=self.lr)
-        scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, 0.5, last_epoch=- 1, verbose=False)
-        return {"optimizer": optimizer, "lr_scheduler": scheduler}
+        #scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, 0.5, last_epoch=- 1, verbose=False)
+        #return {"optimizer": optimizer, "lr_scheduler": scheduler}
+        return optimizer
     
     def training_step(self, batch):
         y_input, y_expected = batch
