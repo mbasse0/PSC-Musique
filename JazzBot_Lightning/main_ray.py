@@ -21,6 +21,7 @@ def main(argv):
     arg1 : nb_epochs
     arg2 : dataset_name
     arg3 : number of hyperparameter samples
+    arg4 : experiment_name
     
     """
     dataset_path = "./Datasets/" + argv[2]
@@ -52,8 +53,8 @@ def main(argv):
     metrics = {"loss": "ptl/val_loss"}
         
     config = {
-        "lr": tune.loguniform(1e-2, 0.3),
-        "batch_size": tune.choice([8, 16, 32]),
+        "lr": tune.loguniform(0.04, 0.2),
+        "batch_size": tune.choice([12]),
     }
 
     trainable = tune.with_parameters(
@@ -64,13 +65,13 @@ def main(argv):
 
     scheduler = ASHAScheduler(
         max_t=num_epochs,
-        grace_period=5,
-        reduction_factor=3)
+        grace_period=6,
+        reduction_factor=4)
 
     resources_per_trial = {"cpu": 1, "gpu": gpus_per_trial}
     
     def stopper(trial_id, result):
-        return math.isnan(result["loss"])
+        return math.isnan(result["loss"]) or (result["training_iteration"] == 2 and result["loss"] > 8)
 
     tuner = tune.Tuner(
         tune.with_resources(
@@ -84,7 +85,7 @@ def main(argv):
             num_samples=num_samples,
         ),
         run_config=air.RunConfig(
-            name="tune_jazzbot_HPO3",
+            name=argv[4],
             local_dir="./results",
             stop=stopper
         ),

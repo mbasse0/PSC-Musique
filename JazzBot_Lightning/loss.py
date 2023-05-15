@@ -68,14 +68,6 @@ class rhythmLoss(nn.Module):
     """
 
     def __init__(self,coeff_) -> None:
-        """
-        coeff_ : float[5] :
-            0 : weigh of token type error penalization
-            1 : weigh of pitch penalization
-            2 : weigh of duration penalization
-            3 : weigh of time penalization
-            4 : weigh of velocity penalization
-        """
         super(rhythmLoss,self).__init__()
         self.coef = coeff_
 
@@ -83,31 +75,26 @@ class rhythmLoss(nn.Module):
         device = "cuda" if torch.cuda.is_available() else "cpu"
         criterion = nn.CrossEntropyLoss()
         softmax_output = F.softmax(output, dim=-1)
-
         max_indices = torch.argmax(softmax_output, dim=1)
-
-        batch_size, sequence_length = target.shape
-
         loss = criterion(output.to(device), target.to(device)).to(device)
-        batch_size = len(max_indices)
-        mask = torch.zeros((batch_size, sequence_length)).to(device)
 
-        for i in range(batch_size):
-            for j in range(sequence_length):
-                if itos_vocab[max_indices[i][j]][0] != itos_vocab[target[i][j]][0]:
-                    mask[i][j] = self.coef[0]
-                else:
-                    if itos_vocab[max_indices[i][j]][0] == 'p':
-                        mask[i][j] = self.coef[1] * float(itos_vocab[max_indices[i][j]] != itos_vocab[target[i][j]][1:])
-                    elif itos_vocab[max_indices[i][j]][0] == 'd':
-                        mask[i][j] = self.coef[2] * np.abs((float(itos_vocab[max_indices[i][j]][1:]) - float(itos_vocab[target[i][j]][1:])))/160
-                    elif itos_vocab[max_indices[i][j]][0] == 't':
-                        mask[i][j] = self.coef[3] * np.abs((float(itos_vocab[max_indices[i][j]][1:]) - float(itos_vocab[target[i][j]][1:])))/100
-                    else:
-                        mask[i][j] = self.coef[4] * np.abs((float(itos_vocab[max_indices[i][j]][1:]) - float(itos_vocab[target[i][j]][1:])))/128
+        itos_vocab_code_points = [ord(s[0]) for s in itos_vocab]
+        itos_vocab_tensor = torch.tensor(itos_vocab_code_points, dtype=torch.int)
 
-        high_cost = (loss * mask.float()).mean()
-        pct_err = mask.float().mean().item()
+        values_tensor = torch.tensor([int(s[1:]) for s in itos_vocab], dtype=torch.int)
+
+        max_indices_chars = itos_vocab_tensor[max_indices]
+        target_chars = itos_vocab_tensor[target]
+
+        max_indices_values = values_tensor[max_indices]
+        target_values = values_tensor[target]
+
+        mask = (max_indices_chars != target_chars).float().to(device)
+        diff = max_indices_values - target_values
+        dist = (diff*diff).float().to(device)
+
+        high_cost = self.coef[0] * (loss * mask.float()).mean() + self.coef[1] * (loss * (dist * mask)).mean()
+
         return loss + high_cost
     
 
@@ -146,40 +133,25 @@ class harmonicLoss(nn.Module):
         device = "cuda" if torch.cuda.is_available() else "cpu"
         criterion = nn.CrossEntropyLoss()
         softmax_output = F.softmax(output, dim=-1)
-
-        batch_size, sequence_length = target.shape
-
         max_indices = torch.argmax(softmax_output, dim=1)
 
         loss = criterion(output.to(device), target.to(device)).to(device)
-        batch_size = len(max_indices)
-        mask = torch.zeros((batch_size, sequence_length)).to(device)
 
-        # 1. Convert the first character of each string in itos_vocab to its Unicode code point
         itos_vocab_code_points = [ord(s[0]) for s in itos_vocab]
-
-
-        # 2. Convert the list of Unicode code points into a tensor
         itos_vocab_tensor = torch.tensor(itos_vocab_code_points, dtype=torch.int)
-
         values_tensor = torch.tensor([int(s[1:]) for s in itos_vocab], dtype=torch.int)
 
-        # 3. Use tensor indexing to get the first character of each string for max_indices and target tensors
         max_indices_chars = itos_vocab_tensor[max_indices]
         target_chars = itos_vocab_tensor[target]
-
         max_indices_values = values_tensor[max_indices]
         target_values = values_tensor[target]
 
-        # 4. Perform an element-wise comparison between max_indices_chars and target_chars
         mask = (max_indices_chars != target_chars).float().to(device)
         diff = max_indices_values - target_values
         dist = (diff*diff).float().to(device)
 
         high_cost = self.coef[0] * (loss * mask.float()).mean() + self.coef[1] * (loss * (dist * mask)).mean()
 
-        high_cost = (loss * mask.float()).mean()
-        pct_err = mask.float().mean().item()
         return loss + high_cost
     
     def harmonicWeigh(self,pitch1 : int, pitch2 : int):
