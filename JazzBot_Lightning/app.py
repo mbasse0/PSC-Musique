@@ -13,19 +13,44 @@ from data_encoder import *
 from generate import *
 import music21
 
+
 st.set_page_config(
     layout="wide",  # Can be "centered" or "wide"
     initial_sidebar_state="auto",  # Can be "auto", "expanded", "collapsed"
 )
 
 
+
 st.title("JazzBot")
 st.text("Générer un solo de Jazz à partir d'un fichier MIDI")
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-state_dict = torch.load("./Models/model_10_deter_CustomLoss_512_8_1_4_0.1_0.05.pth",map_location=torch.device(device))
+
+
+# Get list of model files
+model_dir = "./Models"
+model_files = os.listdir(model_dir)
+
+# Display drop-down menu and get selected model
+selected_model_file = st.selectbox("Choisir un modèle", model_files)
+
+# Load selected model
+model_path = os.path.join(model_dir, selected_model_file)
+state_dict = torch.load(model_path, map_location=torch.device(device))
+
+
+state_dict = torch.load("./Models/" + selected_model_file,map_location=torch.device(device))
 model = Transformer(num_tokens=len(custom_vocab), dim_model=512, num_heads=8, num_encoder_layers=1, num_decoder_layers=4, dropout_p=0.1, learning_rate=0.05).to(device)
+# Load the checkpoint file as a dictionary
+# checkpoint_path = "./Models/epoch=18-step=107767.ckpt"
+# checkpoint = torch.load(checkpoint_path, map_location=torch.device('cpu'))
+
+# # Access the state dictionary
+# state_dict = checkpoint['state_dict']
+
 model.load_state_dict(state_dict)
+
 model.eval()
+
 
 
 
@@ -120,7 +145,7 @@ if clicked:
     with open("./Results/result.mid", "rb") as f:
         midi_data = f.read()
         gen_midi_data = midi_data
-    st.download_button("Download", data=midi_data, file_name="result.mid", mime="audio/midi")
+    st.download_button("Télécharger", data=midi_data, file_name="result.mid", mime="audio/midi")
     generated = True
     html_loader(gen_midi_data, generated)
 

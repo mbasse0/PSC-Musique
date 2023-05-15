@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <!-- Existing styles and scripts -->
-  
+<head>  
+  <meta charset="UTF-8">
+
   <style>
     /* Add your styles */
     body {
@@ -40,29 +40,36 @@
     display: flex;
     justify-content: left;
   }
+  body {
+    color: white;
+  }
+  
 </style>
-  <script>
-    /* Add your scripts */
-  </script>
 
 </head>
 <body>
-  <!-- Existing content -->
-  <div class="container">
-    <webaudio-pianoroll id="piano-roll" width="1000" height="520" timebase="16" loop="1" xrange="64" yrange="22" markend="960" grid="16" wheelzoom="1" editmode="dragpoly"></webaudio-pianoroll>
-    <!-- Vertical slider -->
-<webaudio-slider id="yoffset" direction="vert" width="24" height="200" min="30" max="120" value="60"></webaudio-slider>
 
-<!-- Horizontal slider -->
-<webaudio-slider id="xoffset" direction="horz" width="200" height="24" min="0" max="200" value="0"></webaudio-slider>
-  </div>
- 
 
-  <button id="play-stop-button" onclick="togglePlayStop()" disabled>Play</button>
-  <input type="file" id="midi-file-input" style="display:none;" accept=".mid" />
-  <button id="load-midi-button" onclick="loadMidiFile()">Load MIDI</button>
-  <button id="download-midi-button" onclick="downloadMidiFile()">Download MIDI</button>
-  <div id="music-score"></div>
+  
+
+  <p style="font-size: 24px; font-weight: bold;">Options du clavier de piano:</p>
+  <!-- <!-- <div class="container"> -->
+      <div class="piano-container">
+        <!-- Horizontal slider -->
+        <p>D&eacute;placement horizontal:</p>
+        <webaudio-slider id="xoffset" direction="horz" width="200" height="24" min="0" max="200" value="0"></webaudio-slider>
+        
+        <!-- Vertical slider -->
+        <p>D&eacute;placement vertical:</p>
+        <webaudio-slider id="yoffset" direction="horz" width="200" height="24" min="30" max="120" value="60"></webaudio-slider>
+        <button id="play-stop-button" onclick="togglePlayStop()" disabled>Jouer</button>
+        <input type="file" id="midi-file-input" style="display:none;" accept=".mid" />
+        <button id="load-midi-button" onclick="loadMidiFile()">Charger un MIDI</button>
+        <button id="download-midi-button" onclick="downloadMidiFile()">T&eacute;l&eacute;charger le MIDI</button>
+        <!-- Piano roll -->
+        <webaudio-pianoroll id="piano-roll" width="2500" height="420" timebase="16" loop="1" xrange="64" yrange="22" markend="960" grid="16" wheelzoom="1" editmode="dragpoly"></webaudio-pianoroll>
+      </div>
+    </div>
   <script src="https://cdn.jsdelivr.net/gh/g200kg/webaudio-controls/webaudio-controls.js"></script>
 
   <script src="https://cdn.jsdelivr.net/gh/g200kg/webaudio-pianoroll/webaudio-pianoroll.js"></script>
@@ -75,7 +82,7 @@
   <script>
     parseMidi = module.exports;
   </script>
- 
+  
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.34/Tone.js"></script>
 <script type="module">
     import MidiWriter from 'https://cdn.skypack.dev/midi-writer-js@2.1.4';
@@ -139,15 +146,24 @@
   }).toDestination();
 }
 
+
+let isPiano = true;
+
+
+
+
+
 function Callback(ev) {
   const freq = Tone.Frequency(ev.n, "midi");
   const note = freq.toNote();
   const time = Tone.context.currentTime + ev.t;
   const duration = (ev.g-ev.t)*2;
-  piano.triggerAttackRelease(note, duration, ev.t);
 
-
+  if (isPiano) {
+    piano.triggerAttackRelease(note, duration, ev.t);
+  } 
 }
+
 
     loadPiano();
       window.togglePlayStop = function(){

@@ -53,7 +53,7 @@ def midiToTokens(filename):
         if note.isNote:
             time_rest = note.offset*12-last_time
             if  time_rest >= 192 or note.duration.quarterLength*12>=96: #exception #1
-                if(len(tok)>=121): #arbitrary, at least 25 notes
+                if(len(tok)>=121): 
                     tokens.append(tok)
                     tok = []
             else :
